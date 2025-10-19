@@ -23,10 +23,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || '*', 
+    origin: 'https://paisa-ko-hisab-kitabb.onrender.com', 
     credentials: true,
   })
 );
@@ -80,5 +79,5 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 API available at http://localhost:${PORT}/api`);
+  console.log(`📊 API available at ${process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`}/api`);
 });
