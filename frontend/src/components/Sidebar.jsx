@@ -1,6 +1,14 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Plus, List, BarChart3, User } from 'lucide-react';
+import { 
+  Home, 
+  Plus, 
+  FileText, 
+  BarChart3, 
+  User,
+  Settings,
+  CreditCard
+} from 'lucide-react';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -19,9 +27,9 @@ const Sidebar = () => {
       current: location.pathname === '/add-expense',
     },
     {
-      name: 'Expenses',
+      name: 'Transactions',
       href: '/expenses',
-      icon: List,
+      icon: FileText,
       current: location.pathname === '/expenses',
     },
     {
@@ -32,14 +40,40 @@ const Sidebar = () => {
     },
   ];
 
-
-  // Quick stats removed per user request
+  const secondaryNav = [
+    {
+      name: 'Profile',
+      href: '/profile',
+      icon: User,
+      current: location.pathname === '/profile',
+    },
+    {
+      name: 'Settings',
+      href: '/settings',
+      icon: Settings,
+      current: location.pathname === '/settings',
+    }
+  ];
 
   return (
-    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:pt-16 lg:pb-0 lg:bg-secondary-50 lg:border-r lg:border-secondary-200">
-      <div className="flex-1 flex flex-col min-h-0">
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
+    <>
+      {/* Desktop Sidebar - Reduced Width */}
+      <div className="hidden lg:flex lg:w-56 lg:flex-col lg:fixed lg:inset-y-0 lg:pt-16 lg:pb-0 lg:bg-white lg:border-r lg:border-gray-100">
+        {/* Compact Header */}
+        <div className="flex items-center px-4 py-5 border-b border-gray-100">
+          <div className="w-7 h-7 bg-black rounded-lg flex items-center justify-center mr-3">
+            <CreditCard className="w-3.5 h-3.5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-base font-semibold text-gray-900">Budget</h1>
+          </div>
+        </div>
+
+        {/* Main Navigation - Compact */}
+        <nav className="flex-1 px-3 py-4 space-y-1">
+          <div className="px-2 mb-3">
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Menu</h3>
+          </div>
           {navigation.map((item) => {
             const Icon = item.icon;
             return (
@@ -47,46 +81,125 @@ const Sidebar = () => {
                 key={item.name}
                 to={item.href}
                 className={({ isActive }) =>
-                  `group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  `flex items-center px-2 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-primary-100 text-primary-700 border-r-2 border-primary-600'
-                      : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900'
+                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`
                 }
               >
                 <Icon
-                  className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                    item.current
-                      ? 'text-primary-500'
-                      : 'text-secondary-400 group-hover:text-secondary-500'
+                  className={`mr-3 h-4 w-4 ${
+                    item.current ? 'text-blue-600' : 'text-gray-400'
                   }`}
                 />
-                {item.name}
+                <span className="text-sm">{item.name}</span>
               </NavLink>
             );
           })}
         </nav>
 
-        {/* Quick Stats removed */}
+        {/* Secondary Navigation */}
+        <div className="px-3 py-3 border-t border-gray-100">
+          <div className="space-y-1">
+            {secondaryNav.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.name}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `flex items-center px-2 py-2 text-sm rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-gray-50 text-gray-900'
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                    }`
+                  }
+                >
+                  <Icon
+                    className={`mr-3 h-4 w-4 ${
+                      item.current ? 'text-gray-700' : 'text-gray-400'
+                    }`}
+                  />
+                  <span className="text-sm">{item.name}</span>
+                </NavLink>
+              );
+            })}
+          </div>
+        </div>
 
-        {/* User Profile Section */}
-        <div className="px-4 py-4 border-t border-secondary-200">
+        {/* User Profile - Compact */}
+        <div className="px-3 py-3 border-t border-gray-100">
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-3">
-              <User className="w-4 h-4 text-primary-600" />
+            <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+              <User className="w-3.5 h-3.5 text-gray-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-secondary-900 truncate">
-                John Doe
-              </p>
-              
+              <p className="text-sm font-medium text-gray-900 truncate">John Doe</p>
             </div>
           </div>
-          
-
         </div>
       </div>
-    </div>
+
+      {/* Main Content Area with Proper Spacing */}
+      <div className="lg:pl-56 flex-1">
+        {/* Your page content goes here */}
+        <div className="p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {navigation.find(item => item.current)?.name || 'Page Title'}
+            </h1>
+            <p className="text-gray-600 mt-1">
+              {location.pathname === '/dashboard' && 'Overview of your finances'}
+              {location.pathname === '/add-expense' && 'Add a new expense transaction'}
+              {location.pathname === '/expenses' && 'View and manage all transactions'}
+              {location.pathname === '/reports' && 'Analytics and insights'}
+              {location.pathname === '/profile' && 'Manage your profile settings'}
+              {location.pathname === '/settings' && 'Application preferences'}
+            </p>
+          </div>
+          
+          {/* Your actual page content */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <p className="text-gray-600">Page content will be displayed here with proper spacing and visibility.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+        <nav className="flex justify-around items-center py-2">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.name}
+                to={item.href}
+                className={({ isActive }) =>
+                  `flex flex-col items-center p-1 flex-1 max-w-16 ${
+                    isActive
+                      ? 'text-blue-600'
+                      : 'text-gray-500'
+                  }`
+                }
+              >
+                <div className={`p-2 rounded-lg ${
+                  item.current ? 'bg-blue-50' : ''
+                }`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className="text-xs mt-1 font-medium text-center">
+                  {item.name.split(' ')[0]}
+                </span>
+              </NavLink>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Spacer for mobile bottom nav */}
+      <div className="lg:hidden h-16"></div>
+    </>
   );
 };
 
