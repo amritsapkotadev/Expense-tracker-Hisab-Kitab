@@ -10,6 +10,7 @@ import VerifyOTP from './pages/VerifyOTP';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Welcome from './pages/Welcome';
 
 // Main Pages (Protected)
 import Dashboard from './pages/Dashboard';
@@ -17,6 +18,7 @@ import AddExpense from './pages/AddExpense';
 import ExpenseList from './pages/ExpenseList';
 import Reports from './pages/Reports';
 import Profile from './pages/Profile';
+import DownloadCSV from './pages/DownloadCSV';
 
 // Layout component for protected routes
 const Layout = ({ children }) => {
@@ -41,6 +43,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<Welcome />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="/login" element={<Login />} />
@@ -98,9 +101,21 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/download-csv"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DownloadCSV />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
 
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
++          {/* Redirect authenticated users hitting unknown paths */}
++          <Route path="/home" element={<Navigate to="/dashboard" replace />} />
           
           {/* Catch all route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
