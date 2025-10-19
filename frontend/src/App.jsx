@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
 // Auth Pages
@@ -17,12 +16,13 @@ import Dashboard from './pages/Dashboard';
 import AddExpense from './pages/AddExpense';
 import ExpenseList from './pages/ExpenseList';
 import Reports from './pages/Reports';
+import Profile from './pages/Profile';
 
 // Layout component for protected routes
 const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-secondary-50">
-      <Navbar />
+      {/* Removed Navbar */}
       <div className="lg:pl-64">
         <main className="py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,6 +84,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Reports />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Profile />
                 </Layout>
               </ProtectedRoute>
             }
