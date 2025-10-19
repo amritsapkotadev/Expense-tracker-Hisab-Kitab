@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, TrendingUp, Shield, Zap, BarChart3, Smartphone, Users, Check, Star, Target } from 'lucide-react';
+import { Sparkles, ArrowRight, TrendingUp, Shield, Zap, BarChart3, Smartphone, Users, Check, Star, Target, X, Code, Heart } from 'lucide-react';
 
 const Welcome = () => {
+  const [showPopup, setShowPopup] = useState(false);
+
   const features = [
     {
       icon: BarChart3,
@@ -33,8 +35,80 @@ const Welcome = () => {
     { number: "24/7", label: "Support" }
   ];
 
+  useEffect(() => {
+    // Show popup when component mounts (page loads/refreshes)
+    setShowPopup(true);
+  }, []);
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl max-w-md w-full p-6 transform animate-scale-in">
+            <div className="flex justify-between items-start mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Code className="w-6 h-6 text-white" />
+              </div>
+              <button
+                onClick={closePopup}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors duration-200"
+              >
+                <X className="w-4 h-4 text-gray-600" />
+              </button>
+            </div>
+            
+            <h3 className="text-xl font-bold text-gray-900 mb-3">
+              The Story Behind Hisab Kitab
+            </h3>
+            
+            <div className="space-y-4 text-gray-700">
+              <p className="text-sm leading-relaxed">
+                <strong>This journey started with a simple need:</strong> I wanted to keep track of my own expenses. 
+                What began as a personal project to manage my finances soon turned into something much bigger.
+              </p>
+              
+              <p className="text-sm leading-relaxed">
+                <strong>Then came the thought:</strong> "Why not scale this up and help others too?" 
+                I started adding different features, experimenting with designs, and leveraging various AI tools 
+                to write CSS and create the beautiful interface you see today.
+              </p>
+
+              <p className="text-sm leading-relaxed">
+                Every line of code, every design element, and every feature was carefully crafted 
+                to make financial management not just easy, but enjoyable.
+              </p>
+
+              <div className="flex items-center justify-center space-x-2 py-2 bg-purple-50 rounded-lg">
+                <Heart className="w-4 h-4 text-red-500" />
+                <span className="text-sm font-medium text-purple-700">Built with passion</span>
+                <Heart className="w-4 h-4 text-red-500" />
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={closePopup}
+                className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
+              >
+                Explore Features
+              </button>
+              <Link
+                to="/signup"
+                onClick={closePopup}
+                className="flex-1 py-2 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 font-medium text-center"
+              >
+                Join the Journey
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -83,7 +157,7 @@ const Welcome = () => {
           <div className="text-white space-y-8">
             <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
               <Sparkles className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm font-medium">Join 50,000+ smart savers</span>
+              <span className="text-sm font-medium">From Personal Project to Powerful Platform</span>
             </div>
 
             <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
@@ -94,15 +168,16 @@ const Welcome = () => {
             </h1>
 
             <p className="text-xl text-purple-200 leading-relaxed">
-              Transform how you manage money with AI-powered insights, beautiful dashboards, and effortless expense tracking. Start your journey towards financial freedom today.
+              What started as my personal expense tracker evolved into a comprehensive financial platform. 
+              Experience the same powerful tools I built for myself, now enhanced with AI insights and beautiful design.
             </p>
 
             {/* Key Benefits */}
             <div className="space-y-3">
               {[
+                "Personal project turned professional platform",
                 "AI-powered spending categorization",
                 "Real-time budget tracking",
-                "Custom financial reports",
                 "Multi-device synchronization"
               ].map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
@@ -120,7 +195,7 @@ const Welcome = () => {
                 to="/signup"
                 className="group bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-semibold shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 w-full sm:w-auto"
               >
-                Start Free Trial
+                Start Your Journey
                 <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
               <Link
@@ -159,6 +234,45 @@ const Welcome = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* Story Section */}
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-16">
+        <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
+              <Heart className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-4">Built from Personal Need</h2>
+            <p className="text-purple-200 text-lg">
+              This platform was born from my own struggle to manage expenses effectively
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h3 className="text-white font-semibold text-lg">The Beginning</h3>
+              <p className="text-purple-200">
+                It all started when I needed a simple way to track my daily expenses. 
+                Like many, I tried spreadsheets and various apps, but nothing felt quite right.
+              </p>
+              <p className="text-purple-200">
+                So I decided to build my own solution - something tailored exactly to my needs.
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-white font-semibold text-lg">The Evolution</h3>
+              <p className="text-purple-200">
+                As the project grew, I realized others might benefit from it too. 
+                I started adding features, refining the design, and using AI tools to enhance the user experience.
+              </p>
+              <p className="text-purple-200">
+                What began as a personal tool is now a platform helping thousands manage their finances better.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -206,7 +320,7 @@ const Welcome = () => {
           <Target className="w-12 h-12 text-white mx-auto mb-4" />
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Finances?</h2>
           <p className="text-purple-200 text-lg mb-6">
-            Join thousands of users who have already taken control of their financial future.
+            Join me and thousands of users who have already taken control of their financial future.
           </p>
           <Link
             to="/signup"
@@ -228,11 +342,11 @@ const Welcome = () => {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-white">Hisab Kitab</h1>
-                <p className="text-purple-200 text-sm">Smart Finance Management</p>
+                <p className="text-purple-200 text-sm">From Personal Project to Your Financial Partner</p>
               </div>
             </div>
             <div className="text-purple-300 text-sm">
-              © 2024 Hisab Kitab. All rights reserved.
+              © 2024 Hisab Kitab. Built with passion.
             </div>
           </div>
         </div>
