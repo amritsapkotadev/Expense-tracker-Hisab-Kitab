@@ -25,7 +25,7 @@ app.use(limiter);
 
 app.use(
   cors({
-    origin: 'https://paisa-ko-hisab-kitabb.onrender.com', 
+    origin: 'https://hisabkitab-hazel.vercel.app/', 
     credentials: true,
   })
 );
