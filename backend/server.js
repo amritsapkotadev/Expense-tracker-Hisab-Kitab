@@ -25,7 +25,7 @@ app.use(limiter);
 
 app.use(
   cors({
-    origin: 'https://hisabkitab-hazel.vercel.app/', 
+    origin: 'https://paisa-ko-hisab.netlify.app/', 
     credentials: true,
   })
 );
