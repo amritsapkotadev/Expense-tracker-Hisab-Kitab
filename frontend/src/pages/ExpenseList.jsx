@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  Edit, 
-  Trash2, 
+import {
+  Search,
+  Filter,
+  Download,
+  Edit,
+  Trash2,
   Plus,
   Calendar,
   DollarSign,
   Tag,
-  Eye,
-  MoreVertical
 } from 'lucide-react';
 import { expenseAPI } from '../utils/api';
 import { formatCurrency, formatDate, getCategoryColor, getExpenseCategories } from '../utils/helpers';
@@ -87,11 +85,8 @@ const ExpenseList = () => {
   };
 
   const handleDateChange = (type, value) => {
-    if (type === 'start') {
-      setStartDate(value);
-    } else {
-      setEndDate(value);
-    }
+    if (type === 'start') setStartDate(value);
+    else setEndDate(value);
     setCurrentPage(1);
   };
 
@@ -112,8 +107,6 @@ const ExpenseList = () => {
       };
 
       const response = await expenseAPI.downloadCSV(params);
-      
-      // Create blob and download
       const blob = new Blob([response.data], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -123,7 +116,6 @@ const ExpenseList = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
       toast.success('CSV downloaded successfully');
     } catch (error) {
       toast.error('Failed to download CSV');
@@ -146,19 +138,22 @@ const ExpenseList = () => {
           <h1 className="text-2xl font-bold text-secondary-900">Expenses</h1>
           <p className="text-secondary-600">Manage and track your expenses</p>
         </div>
+
+        {/* Action Buttons */}
         <div className="mt-4 sm:mt-0 flex space-x-3">
           <button
             onClick={downloadCSV}
-            className="btn btn-outline flex items-center space-x-2"
+            className="flex items-center justify-center space-x-2 px-6 py-3 text-base font-medium rounded-lg border border-primary-500 text-primary-600 hover:bg-primary-50 transition-all duration-200"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-5 h-5" />
             <span>Export CSV</span>
           </button>
+
           <Link
             to="/add-expense"
-            className="btn btn-primary flex items-center space-x-2"
+            className="flex items-center justify-center space-x-2 px-6 py-3 text-base font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-all duration-200"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             <span>Add Expense</span>
           </Link>
         </div>
@@ -172,37 +167,31 @@ const ExpenseList = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-secondary-600">Total Amount</p>
-                  <p className="text-2xl font-bold text-secondary-900">
-                    {formatCurrency(summary.totalAmount)}
-                  </p>
+                  <p className="text-2xl font-bold text-secondary-900">{formatCurrency(summary.totalAmount)}</p>
                 </div>
                 <DollarSign className="w-8 h-8 text-primary-600" />
               </div>
             </div>
           </div>
-          
+
           <div className="card">
             <div className="card-content">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-secondary-600">Total Expenses</p>
-                  <p className="text-2xl font-bold text-secondary-900">
-                    {summary.totalExpenses}
-                  </p>
+                  <p className="text-2xl font-bold text-secondary-900">{summary.totalExpenses}</p>
                 </div>
                 <Tag className="w-8 h-8 text-green-600" />
               </div>
             </div>
           </div>
-          
+
           <div className="card">
             <div className="card-content">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-secondary-600">Categories</p>
-                  <p className="text-2xl font-bold text-secondary-900">
-                    {summary.categoryStats?.length || 0}
-                  </p>
+                  <p className="text-2xl font-bold text-secondary-900">{summary.categoryStats?.length || 0}</p>
                 </div>
                 <Calendar className="w-8 h-8 text-purple-600" />
               </div>
@@ -232,9 +221,9 @@ const ExpenseList = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="btn btn-outline flex items-center space-x-2"
+              className="flex items-center justify-center space-x-2 px-6 py-3 text-base font-medium border border-primary-500 text-primary-600 rounded-lg hover:bg-primary-50 transition-all duration-200"
             >
-              <Filter className="w-4 h-4" />
+              <Filter className="w-5 h-5" />
               <span>Filters</span>
             </button>
           </div>
@@ -287,7 +276,7 @@ const ExpenseList = () => {
               <div className="mt-4">
                 <button
                   onClick={clearFilters}
-                  className="btn btn-ghost btn-sm"
+                  className="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-all"
                 >
                   Clear Filters
                 </button>
@@ -318,9 +307,7 @@ const ExpenseList = () => {
                     <tr key={expense._id}>
                       <td>
                         <div>
-                          <p className="font-medium text-secondary-900">
-                            {expense.title}
-                          </p>
+                          <p className="font-medium text-secondary-900">{expense.title}</p>
                           {expense.notes && (
                             <p className="text-sm text-secondary-500 truncate max-w-xs">
                               {expense.notes}
@@ -345,9 +332,7 @@ const ExpenseList = () => {
                         </span>
                       </td>
                       <td>
-                        <span className="text-secondary-600">
-                          {formatDate(expense.date)}
-                        </span>
+                        <span className="text-secondary-600">{formatDate(expense.date)}</span>
                       </td>
                       <td>
                         <div className="flex flex-wrap gap-1">
@@ -367,21 +352,21 @@ const ExpenseList = () => {
                         </div>
                       </td>
                       <td>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center justify-center space-x-3">
                           <Link
                             to={`/expenses/${expense._id}/edit`}
-                            className="p-1 text-secondary-400 hover:text-primary-600"
+                            className="flex items-center justify-center p-2 rounded-md hover:bg-primary-50 text-secondary-500 hover:text-primary-600 transition-all"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="w-5 h-5" />
                           </Link>
                           <button
                             onClick={() => {
                               setSelectedExpense(expense);
                               setShowDeleteModal(true);
                             }}
-                            className="p-1 text-secondary-400 hover:text-red-600"
+                            className="flex items-center justify-center p-2 rounded-md hover:bg-red-50 text-secondary-500 hover:text-red-600 transition-all"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-5 h-5" />
                           </button>
                         </div>
                       </td>
@@ -393,16 +378,18 @@ const ExpenseList = () => {
           ) : (
             <div className="text-center py-12">
               <DollarSign className="w-12 h-12 text-secondary-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-secondary-900 mb-2">
-                No expenses found
-              </h3>
+              <h3 className="text-lg font-medium text-secondary-900 mb-2">No expenses found</h3>
               <p className="text-secondary-600 mb-6">
                 {searchTerm || selectedCategory !== 'all' || startDate || endDate
                   ? 'Try adjusting your filters to see more results.'
                   : 'Get started by adding your first expense.'}
               </p>
-              <Link to="/add-expense" className="btn btn-primary">
-                Add Your First Expense
+              <Link
+                to="/add-expense"
+                className="flex items-center justify-center space-x-2 px-6 py-3 text-base font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-all duration-200"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Add Your First Expense</span>
               </Link>
             </div>
           )}
@@ -419,14 +406,14 @@ const ExpenseList = () => {
             <button
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
-              className="btn btn-outline btn-sm disabled:opacity-50"
+              className="flex items-center justify-center px-5 py-2 text-sm rounded-md border border-secondary-300 text-secondary-600 hover:bg-secondary-50 disabled:opacity-50"
             >
               Previous
             </button>
             <button
               onClick={() => setCurrentPage(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="btn btn-outline btn-sm disabled:opacity-50"
+              className="flex items-center justify-center px-5 py-2 text-sm rounded-md border border-secondary-300 text-secondary-600 hover:bg-secondary-50 disabled:opacity-50"
             >
               Next
             </button>
@@ -437,10 +424,8 @@ const ExpenseList = () => {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedExpense && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium text-secondary-900 mb-4">
-              Delete Expense
-            </h3>
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-lg">
+            <h3 className="text-lg font-semibold text-secondary-900 mb-4">Delete Expense</h3>
             <p className="text-secondary-600 mb-6">
               Are you sure you want to delete "{selectedExpense.title}"? This action cannot be undone.
             </p>
@@ -450,13 +435,13 @@ const ExpenseList = () => {
                   setShowDeleteModal(false);
                   setSelectedExpense(null);
                 }}
-                className="btn btn-outline flex-1"
+                className="flex-1 flex items-center justify-center px-5 py-2.5 rounded-lg border border-secondary-300 text-secondary-600 hover:bg-secondary-50"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(selectedExpense._id)}
-                className="btn bg-red-600 text-white hover:bg-red-700 flex-1"
+                className="flex-1 flex items-center justify-center px-5 py-2.5 rounded-lg bg-red-600 text-white hover:bg-red-700"
               >
                 Delete
               </button>
