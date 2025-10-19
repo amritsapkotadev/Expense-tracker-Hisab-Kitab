@@ -21,7 +21,11 @@ import {
   TrendingDown,
   DollarSign,
   BarChart3,
-  PieChart as PieChartIcon
+  PieChart as PieChartIcon,
+  ChevronDown,
+  ArrowUp,
+  ArrowDown,
+  Info
 } from 'lucide-react';
 import { reportsAPI } from '../utils/api';
 import { formatCurrency, getCategoryColor, getExpenseCategories } from '../utils/helpers';
@@ -37,6 +41,7 @@ const Reports = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [groupBy, setGroupBy] = useState('month');
   const [activeTab, setActiveTab] = useState('summary');
+  const [showFilters, setShowFilters] = useState(false);
 
   const categories = getExpenseCategories();
 
@@ -75,13 +80,12 @@ const Reports = () => {
     try {
       const params = {
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
-        startDate: dateRange === 'custom' ? undefined : undefined, // Add custom date logic if needed
+        startDate: dateRange === 'custom' ? undefined : undefined,
         endDate: undefined,
       };
 
       const response = await reportsAPI.downloadCSV(params);
       
-      // Create blob and download
       const blob = new Blob([response.data], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -102,8 +106,11 @@ const Reports = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="spinner w-8 h-8"></div>
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-secondary-600">Loading your financial insights...</p>
+        </div>
       </div>
     );
   }
@@ -111,7 +118,10 @@ const Reports = () => {
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600 mb-4">{error}</p>
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Info className="w-8 h-8 text-red-600" />
+        </div>
+        <p className="text-red-600 mb-4 text-lg">{error}</p>
         <button
           onClick={fetchReportsData}
           className="btn btn-primary"
@@ -123,36 +133,88 @@ const Reports = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-secondary-900">Reports & Analytics</h1>
-          <p className="text-secondary-600">Detailed insights into your spending patterns</p>
-        </div>
-        <div className="mt-4 sm:mt-0">
-          <button
-            onClick={downloadCSV}
-            className="btn btn-primary flex items-center space-x-2"
-          >
-            <Download className="w-4 h-4" />
-            <span>Download CSV</span>
-          </button>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900">Financial Reports</h1>
+                <p className="mt-2 text-gray-600">Detailed insights into your spending patterns and trends</p>
+              </div>
+              <div className="mt-4 sm:mt-0 flex space-x-3">
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="btn btn-outline flex items-center space-x-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  <span>Filters</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+                </button>
+                <button
+  onClick={downloadCSV}
+  className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
+             bg-gradient-to-r from-primary-500 to-primary-600 
+             text-white font-medium hover:from-primary-600 hover:to-primary-700 
+             shadow-md hover:shadow-lg transition-all duration-200"
+>
+  <Download className="w-4 h-4" />
+  <span>Export CSV</span>
+</button>
+
+              </div>
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="mt-8">
+              <div className="border-b border-gray-200">
+                <nav className="-mb-px flex space-x-8">
+                  {[
+                    { id: 'summary', name: 'Overview', icon: BarChart3 },
+                    { id: 'trends', name: 'Trends', icon: TrendingUp },
+                    { id: 'insights', name: 'Insights', icon: PieChartIcon },
+                  ].map((tab) => {
+                    const Icon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                          activeTab === tab.id
+                            ? 'border-primary-500 text-primary-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span>{tab.name}</span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="card">
-        <div className="card-content">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+      {/* Filters Section */}
+      {showFilters && (
+        <div className="bg-white border-b border-gray-200 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Date Range */}
               <div>
-                <label className="label">Time Period</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4" />
+                    <span>Time Period</span>
+                  </div>
+                </label>
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value)}
-                  className="input"
+                  className="w-full input"
                 >
                   <option value="7">Last 7 days</option>
                   <option value="30">Last 30 days</option>
@@ -164,11 +226,13 @@ const Reports = () => {
 
               {/* Category Filter */}
               <div>
-                <label className="label">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="input"
+                  className="w-full input"
                 >
                   <option value="all">All Categories</option>
                   {categories.map((category) => (
@@ -181,11 +245,13 @@ const Reports = () => {
 
               {/* Group By */}
               <div>
-                <label className="label">Group By</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Group By
+                </label>
                 <select
                   value={groupBy}
                   onChange={(e) => setGroupBy(e.target.value)}
-                  className="input"
+                  className="w-full input"
                 >
                   <option value="month">Month</option>
                   <option value="category">Category</option>
@@ -195,106 +261,80 @@ const Reports = () => {
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Tab Navigation */}
-      <div className="border-b border-secondary-200">
-        <nav className="-mb-px flex space-x-8">
-          {[
-            { id: 'summary', name: 'Summary', icon: BarChart3 },
-            { id: 'trends', name: 'Trends', icon: TrendingUp },
-            { id: 'insights', name: 'Insights', icon: PieChartIcon },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id
-                    ? 'border-primary-500 text-primary-600'
-                    : 'border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{tab.name}</span>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
-
-      {/* Summary Tab */}
-      {activeTab === 'summary' && summary && (
-        <div className="space-y-6">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="card">
-              <div className="card-content">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Summary Tab */}
+        {activeTab === 'summary' && summary && (
+          <div className="space-y-8">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-secondary-600">Total Amount</p>
-                    <p className="text-2xl font-bold text-secondary-900">
+                    <p className="text-sm font-medium text-gray-600">Total Amount</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-1">
                       {formatCurrency(summary.summary.totalAmount)}
                     </p>
                   </div>
-                  <DollarSign className="w-8 h-8 text-primary-600" />
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <DollarSign className="w-6 h-6 text-blue-600" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="card">
-              <div className="card-content">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-secondary-600">Total Expenses</p>
-                    <p className="text-2xl font-bold text-secondary-900">
+                    <p className="text-sm font-medium text-gray-600">Total Expenses</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-1">
                       {summary.summary.totalCount}
                     </p>
                   </div>
-                  <BarChart3 className="w-8 h-8 text-green-600" />
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-6 h-6 text-green-600" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="card">
-              <div className="card-content">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-secondary-600">Average</p>
-                    <p className="text-2xl font-bold text-secondary-900">
+                    <p className="text-sm font-medium text-gray-600">Average</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-1">
                       {formatCurrency(summary.summary.averageAmount)}
                     </p>
                   </div>
-                  <TrendingUp className="w-8 h-8 text-blue-600" />
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-purple-600" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="card">
-              <div className="card-content">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-secondary-600">Categories</p>
-                    <p className="text-2xl font-bold text-secondary-900">
+                    <p className="text-sm font-medium text-gray-600">Categories</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-1">
                       {summary.categoryBreakdown?.length || 0}
                     </p>
                   </div>
-                  <PieChartIcon className="w-8 h-8 text-purple-600" />
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <PieChartIcon className="w-6 h-6 text-orange-600" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Category Breakdown */}
-            <div className="card">
-              <div className="card-header">
-                <h3 className="card-title">Category Breakdown</h3>
-                <p className="card-description">Spending distribution by category</p>
-              </div>
-              <div className="card-content">
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Category Breakdown */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Category Breakdown</h3>
+                  <p className="text-gray-600 mt-1">Spending distribution by category</p>
+                </div>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -317,21 +357,19 @@ const Reports = () => {
                   </ResponsiveContainer>
                 </div>
               </div>
-            </div>
 
-            {/* Grouped Data */}
-            <div className="card">
-              <div className="card-header">
-                <h3 className="card-title">
-                  {groupBy === 'month' ? 'Monthly' : groupBy === 'category' ? 'Category' : 'Daily'} Breakdown
-                </h3>
-                <p className="card-description">Spending by {groupBy}</p>
-              </div>
-              <div className="card-content">
+              {/* Grouped Data */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {groupBy === 'month' ? 'Monthly' : groupBy === 'category' ? 'Category' : 'Daily'} Breakdown
+                  </h3>
+                  <p className="text-gray-600 mt-1">Spending by {groupBy}</p>
+                </div>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={summary.groupedData}>
-                      <CartesianGrid strokeDasharray="3 3" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
                       <XAxis 
                         dataKey="_id" 
                         tick={{ fontSize: 12 }}
@@ -347,31 +385,32 @@ const Reports = () => {
                         tick={{ fontSize: 12 }}
                         tickFormatter={(value) => `$${value}`}
                       />
-                      <Tooltip formatter={(value) => [formatCurrency(value), 'Amount']} />
-                      <Bar dataKey="total" fill="#3B82F6" />
+                      <Tooltip 
+                        formatter={(value) => [formatCurrency(value), 'Amount']}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      />
+                      <Bar dataKey="total" fill="#3B82F6" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Trends Tab */}
-      {activeTab === 'trends' && trends && (
-        <div className="space-y-6">
-          {/* Monthly Trends */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Monthly Trends</h3>
-              <p className="card-description">Spending patterns over time</p>
-            </div>
-            <div className="card-content">
+        {/* Trends Tab */}
+        {activeTab === 'trends' && trends && (
+          <div className="space-y-8">
+            {/* Monthly Trends */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Monthly Trends</h3>
+                <p className="text-gray-600 mt-1">Spending patterns over time</p>
+              </div>
               <div className="h-96">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trends.monthlyTrends}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
                     <XAxis 
                       dataKey="_id" 
                       tick={{ fontSize: 12 }}
@@ -384,48 +423,55 @@ const Reports = () => {
                       tick={{ fontSize: 12 }}
                       tickFormatter={(value) => `$${value}`}
                     />
-                    <Tooltip formatter={(value) => [formatCurrency(value), 'Amount']} />
+                    <Tooltip 
+                      formatter={(value) => [formatCurrency(value), 'Amount']}
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    />
                     <Line 
                       type="monotone" 
                       dataKey="total" 
                       stroke="#3B82F6" 
-                      strokeWidth={2}
+                      strokeWidth={3}
                       dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, fill: '#1D4ED8' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             </div>
-          </div>
 
-          {/* Top Categories */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Top Spending Categories</h3>
-              <p className="card-description">Categories with highest spending</p>
-            </div>
-            <div className="card-content">
+            {/* Top Categories */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Top Spending Categories</h3>
+                <p className="text-gray-600 mt-1">Categories with highest spending</p>
+              </div>
               <div className="space-y-4">
                 {trends.topCategories?.map((category, index) => (
-                  <div key={category._id} className="flex items-center justify-between p-4 bg-secondary-50 rounded-lg">
+                  <div key={category._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                     <div className="flex items-center space-x-4">
-                      <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                        <span className="text-primary-600 font-medium text-sm">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        index === 0 ? 'bg-yellow-100 text-yellow-600' :
+                        index === 1 ? 'bg-gray-100 text-gray-600' :
+                        index === 2 ? 'bg-orange-100 text-orange-600' :
+                        'bg-blue-100 text-blue-600'
+                      }`}>
+                        <span className="font-semibold text-sm">
                           {index + 1}
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-secondary-900">{category._id}</p>
-                        <p className="text-sm text-secondary-500">
+                        <p className="font-semibold text-gray-900">{category._id}</p>
+                        <p className="text-sm text-gray-500">
                           {category.count} transactions
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-secondary-900">
+                      <p className="font-semibold text-gray-900">
                         {formatCurrency(category.total)}
                       </p>
-                      <p className="text-sm text-secondary-500">
+                      <p className="text-sm text-gray-500">
                         Avg: {formatCurrency(category.average)}
                       </p>
                     </div>
@@ -434,103 +480,107 @@ const Reports = () => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Insights Tab */}
-      {activeTab === 'insights' && insights && (
-        <div className="space-y-6">
-          {/* Spending Change */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Spending Analysis</h3>
-              <p className="card-description">Compare with previous period</p>
-            </div>
-            <div className="card-content">
+        {/* Insights Tab */}
+        {activeTab === 'insights' && insights && (
+          <div className="space-y-8">
+            {/* Spending Change */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Spending Analysis</h3>
+                <p className="text-gray-600 mt-1">Compare with previous period</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="text-center p-6 bg-secondary-50 rounded-lg">
+                <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
                   <div className="flex items-center justify-center mb-4">
                     {insights.insights.spendingChange.total > 0 ? (
-                      <TrendingUp className="w-8 h-8 text-red-600" />
+                      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                        <ArrowUp className="w-8 h-8 text-red-600" />
+                      </div>
                     ) : (
-                      <TrendingDown className="w-8 h-8 text-green-600" />
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                        <ArrowDown className="w-8 h-8 text-green-600" />
+                      </div>
                     )}
                   </div>
-                  <p className="text-sm text-secondary-600 mb-2">Total Spending</p>
-                  <p className={`text-2xl font-bold ${
+                  <p className="text-lg font-medium text-gray-600 mb-2">Total Spending</p>
+                  <p className={`text-3xl font-bold mb-2 ${
                     insights.insights.spendingChange.total > 0 ? 'text-red-600' : 'text-green-600'
                   }`}>
                     {insights.insights.spendingChange.total > 0 ? '+' : ''}
                     {insights.insights.spendingChange.total}%
                   </p>
-                  <p className="text-sm text-secondary-500">
+                  <p className="text-gray-500">
                     {insights.insights.spendingChange.trend} from last period
                   </p>
                 </div>
 
-                <div className="text-center p-6 bg-secondary-50 rounded-lg">
+                <div className="text-center p-8 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
                   <div className="flex items-center justify-center mb-4">
                     {insights.insights.spendingChange.average > 0 ? (
-                      <TrendingUp className="w-8 h-8 text-red-600" />
+                      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                        <ArrowUp className="w-8 h-8 text-red-600" />
+                      </div>
                     ) : (
-                      <TrendingDown className="w-8 h-8 text-green-600" />
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                        <ArrowDown className="w-8 h-8 text-green-600" />
+                      </div>
                     )}
                   </div>
-                  <p className="text-sm text-secondary-600 mb-2">Average Spending</p>
-                  <p className={`text-2xl font-bold ${
+                  <p className="text-lg font-medium text-gray-600 mb-2">Average Spending</p>
+                  <p className={`text-3xl font-bold mb-2 ${
                     insights.insights.spendingChange.average > 0 ? 'text-red-600' : 'text-green-600'
                   }`}>
                     {insights.insights.spendingChange.average > 0 ? '+' : ''}
                     {insights.insights.spendingChange.average}%
                   </p>
-                  <p className="text-sm text-secondary-500">
+                  <p className="text-gray-500">
                     Per transaction
                   </p>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Recommendations */}
-          {insights.insights.recommendations?.length > 0 && (
-            <div className="card">
-              <div className="card-header">
-                <h3 className="card-title">Recommendations</h3>
-                <p className="card-description">Tips to improve your spending habits</p>
-              </div>
-              <div className="card-content">
-                <div className="space-y-4">
+            {/* Recommendations */}
+            {insights.insights.recommendations?.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Smart Recommendations</h3>
+                  <p className="text-gray-600 mt-1">Tips to improve your spending habits</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {insights.insights.recommendations.map((recommendation, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg">
-                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-blue-600 text-sm font-medium">{index + 1}</span>
+                    <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-blue-600 text-sm font-semibold">{index + 1}</span>
                       </div>
-                      <p className="text-blue-800">{recommendation}</p>
+                      <p className="text-blue-800 leading-relaxed">{recommendation}</p>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Category Insights */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Category Insights</h3>
-              <p className="card-description">Detailed breakdown by category</p>
-            </div>
-            <div className="card-content">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Category Insights */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Category Insights</h3>
+                <p className="text-gray-600 mt-1">Detailed breakdown by category</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {insights.categoryInsights?.map((category) => (
-                  <div key={category._id} className="p-4 border border-secondary-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-secondary-900">{category._id}</h4>
-                      <span className="text-sm text-secondary-500">{category.count} items</span>
+                  <div key={category._id} className="p-6 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-gray-900">{category._id}</h4>
+                      <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded-full">
+                        {category.count} items
+                      </span>
                     </div>
-                    <p className="text-2xl font-bold text-secondary-900 mb-1">
+                    <p className="text-2xl font-bold text-gray-900 mb-2">
                       {formatCurrency(category.total)}
                     </p>
-                    <p className="text-sm text-secondary-500">
+                    <p className="text-gray-500">
                       Avg: {formatCurrency(category.average)}
                     </p>
                   </div>
@@ -538,8 +588,8 @@ const Reports = () => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

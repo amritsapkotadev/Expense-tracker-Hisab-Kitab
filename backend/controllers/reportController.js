@@ -1,5 +1,6 @@
 const { Parser } = require('json2csv');
 const Expense = require('../models/Expense');
+const { sendCSVReportEmail } = require('../utils/sendEmail');
 
 /**
  * Get expense summary for reports
@@ -150,6 +151,7 @@ const getExpenseSummary = async (req, res) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
+// Download CSV to browser
 const downloadCSV = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -474,9 +476,74 @@ const getExpenseInsights = async (req, res) => {
   }
 };
 
+// Build CSV from expenses array
+const buildCSVFromExpenses = (expenses) => {
+  // Prepare data for CSV
+  const csvData = expenses.map(expense => ({
+    'Date': new Date(expense.date).toLocaleDateString(),
+    'Title': expense.title,
+    'Amount': expense.amount,
+    'Category': expense.category,
+    'Tags': expense.tags.join(', '),
+    'Notes': expense.notes || '',
+    'Created At': new Date(expense.createdAt).toLocaleString()
+  }));
+
+  // Define CSV fields
+  const fields = [
+    { label: 'Date', value: 'Date' },
+    { label: 'Title', value: 'Title' },
+    { label: 'Amount', value: 'Amount' },
+    { label: 'Category', value: 'Category' },
+    { label: 'Tags', value: 'Tags' },
+    { label: 'Notes', value: 'Notes' },
+    { label: 'Created At', value: 'Created At' }
+  ];
+
+  // Generate CSV
+  const json2csvParser = new Parser({ fields });
+  return json2csvParser.parse(csvData);
+};
+
+// Send CSV via email
+const sendCSVReport = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { startDate, endDate, category } = req.body || {};
+
+    // Build filter
+    const filter = { userId };
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+
+    const expenses = await Expense.find(filter).sort({ date: -1 }).lean();
+    if (expenses.length === 0) {
+      return res.status(404).json({ success: false, message: 'No expenses found for the specified criteria' });
+    }
+
+    const csv = buildCSVFromExpenses(expenses);
+    const filename = `expenses_${new Date().toISOString().split('T')[0]}.csv`;
+
+    // Send email
+    await sendCSVReportEmail(req.user.email, req.user.name || 'User', csv, filename);
+
+    res.json({ success: true, message: 'CSV report will be sent to your email shortly' });
+  } catch (error) {
+    console.error('Send CSV report email error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error while emailing CSV report' });
+  }
+};
+
 module.exports = {
   getExpenseSummary,
   downloadCSV,
+  sendCSVReport,
   getExpenseTrends,
   getExpenseInsights
 };

@@ -3,7 +3,8 @@ const {
   getExpenseSummary,
   downloadCSV,
   getExpenseTrends,
-  getExpenseInsights
+  getExpenseInsights,
+  sendCSVReport
 } = require('../controllers/reportController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
@@ -17,5 +18,6 @@ router.get('/summary', getExpenseSummary);
 router.get('/trends', getExpenseTrends);
 router.get('/insights', getExpenseInsights);
 router.get('/detailed.csv', downloadCSV);
+router.post('/send-csv', sendCSVReport);
 
 module.exports = router;
