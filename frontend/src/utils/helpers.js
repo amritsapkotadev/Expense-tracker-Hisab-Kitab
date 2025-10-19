@@ -6,7 +6,7 @@ import { format, parseISO, isValid } from 'date-fns';
  * @param {string} currency - Currency code (default: USD)
  * @returns {string} - Formatted currency string
  */
-export const formatCurrency = (amount, currency = 'USD') => {
+export const formatCurrency = (amount, currency = 'NPR') => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency,

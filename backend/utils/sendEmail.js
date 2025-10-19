@@ -123,7 +123,43 @@ const sendPasswordResetEmail = async (email, name, resetToken) => {
   }
 };
 
+/**
+ * Send CSV report email with attachment
+ * @param {string} email - Recipient email
+ * @param {string} name - Recipient name
+ * @param {Buffer|string} csv - CSV content buffer or string
+ * @param {string} filename - Attachment filename
+ * @returns {Promise}
+ */
+const sendCSVReportEmail = async (email, name, csv, filename = 'expenses.csv') => {
+  try {
+    const transporter = createTransporter();
+
+    const mailOptions = {
+      from: `"Expense Tracker" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Your Expense CSV Report',
+      text: `Hi ${name},\n\nPlease find attached your expense report CSV.\n\nRegards,\nExpense Tracker Team`,
+      attachments: [
+        {
+          filename,
+          content: csv,
+          contentType: 'text/csv'
+        }
+      ]
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log('✅ CSV report email sent successfully:', result.messageId);
+    return result;
+  } catch (error) {
+    console.error('❌ Error sending CSV report email:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   sendOTPEmail,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  sendCSVReportEmail
 };

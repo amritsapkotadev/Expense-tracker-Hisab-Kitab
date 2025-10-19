@@ -69,6 +69,7 @@ export const reportsAPI = {
     params,
     responseType: 'blob'
   }),
+  sendCSV: (data = {}) => api.post('/reports/send-csv', data),
 };
 
 // Health check
