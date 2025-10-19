@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
-  Home, 
-  Plus, 
-  FileText, 
-  BarChart3, 
+  Home,
+  Plus,
+  FileText,
+  BarChart3,
+  Download,
   User,
-  Settings,
+  LogOut,
   CreditCard
 } from 'lucide-react';
 
@@ -33,11 +34,18 @@ const Sidebar = () => {
       current: location.pathname === '/expenses',
     },
     {
-      name: 'Reports',
+      name: 'Generate Report',
       href: '/reports',
       icon: BarChart3,
       current: location.pathname === '/reports',
     },
+    {
+      name: 'Download CSV',
+      href: '/download-csv',
+      icon: Download,
+      current: location.pathname === '/download-csv',
+    },
+   
   ];
 
   const secondaryNav = [
@@ -48,11 +56,12 @@ const Sidebar = () => {
       current: location.pathname === '/profile',
     },
     {
-      name: 'Settings',
-      href: '/settings',
-      icon: Settings,
-      current: location.pathname === '/settings',
-    }
+      name: 'Logout',
+      href: '/login',
+      icon: LogOut,
+      current: false,
+    },
+
   ];
 
   return (
@@ -70,7 +79,7 @@ const Sidebar = () => {
         </div>
 
         {/* Main Navigation - Compact */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-3">
           <div className="px-2 mb-3">
             <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Menu</h3>
           </div>
@@ -137,31 +146,6 @@ const Sidebar = () => {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">John Doe</p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area with Proper Spacing */}
-      <div className="lg:pl-56 flex-1">
-        {/* Your page content goes here */}
-        <div className="p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
-              {navigation.find(item => item.current)?.name || 'Page Title'}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {location.pathname === '/dashboard' && 'Overview of your finances'}
-              {location.pathname === '/add-expense' && 'Add a new expense transaction'}
-              {location.pathname === '/expenses' && 'View and manage all transactions'}
-              {location.pathname === '/reports' && 'Analytics and insights'}
-              {location.pathname === '/profile' && 'Manage your profile settings'}
-              {location.pathname === '/settings' && 'Application preferences'}
-            </p>
-          </div>
-          
-          {/* Your actual page content */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <p className="text-gray-600">Page content will be displayed here with proper spacing and visibility.</p>
           </div>
         </div>
       </div>
