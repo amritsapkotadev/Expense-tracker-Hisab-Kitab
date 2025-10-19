@@ -102,16 +102,16 @@ const Login = () => {
           {/* Stats */}
           <div className="flex space-x-6 pt-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-white">50K+</div>
+              <div className="text-2xl font-bold text-white">Only Me</div>
               <div className="text-purple-200 text-sm">Active Users</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-white">$10M+</div>
+              <div className="text-2xl font-bold text-white">Rs10000+</div>
               <div className="text-purple-200 text-sm">Managed</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-white">4.9★</div>
-              <div className="text-purple-200 text-sm">Rating</div>
+              <div className="text-purple-200 text-sm">Rating( I gave )</div>
             </div>
           </div>
         </div>

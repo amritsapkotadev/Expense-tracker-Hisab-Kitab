@@ -29,8 +29,8 @@ const Welcome = () => {
   ];
 
   const stats = [
-    { number: "50K+", label: "Active Users" },
-    { number: "$10M+", label: "Managed" },
+    { number: "Only Me", label: "Active Users" },
+    { number: "Rs10000+", label: "Managed" },
     { number: "4.9★", label: "Rating" },
     { number: "24/7", label: "Support" }
   ];
