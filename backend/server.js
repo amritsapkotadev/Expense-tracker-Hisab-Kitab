@@ -25,7 +25,7 @@ app.use(limiter);
 
 app.use(
   cors({
-    origin: 'https://paisa-ko-hisab.netlify.app/', 
+    origin: 'https://paisa-ko-hisab-kitabb.onrender.com/', 
     credentials: true,
   })
 );
