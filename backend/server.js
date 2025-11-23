@@ -23,13 +23,35 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use(
-  cors({
-    // Use CLIENT_URL when provided; otherwise allow all origins (development)
-    origin: process.env.CLIENT_URL || true,
-    credentials: true,
-  })
-);
+// CORS configuration
+// Use CLIENT_URL env var in production (e.g. https://your-frontend.com)
+// Allow common local dev origins as well
+const envClientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : null;
+const allowedOrigins = [
+  envClientUrl,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+].filter(Boolean);
+
+// CORS options: allow requests from allowedOrigins, allow non-browser tools (no origin) and allow credentials
+const corsOptions = {
+  origin: function (origin, callback) {
+    // If no origin (curl/Postman/server-to-server), allow
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    // Allow in non-production (convenient for local dev) OR if origin is in whitelist
+    if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS policy: This origin is not allowed.'));
+  },
+  credentials: true, // set to true if you need to send/receive cookies
+};
+
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -66,22 +88,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.get('/api', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Expense Tracker API',
-    routes: {
-      auth: '/api/auth',
-      expenses: '/api/expenses',
-      reports: '/api/reports',
-      health: '/api/health',
-    },
-  });
-});
-
 // 404 handler
 app.use('*', (req, res) => {
-  console.warn(`404 - Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
     success: false,
     message: 'Route not found',
