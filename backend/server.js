@@ -25,7 +25,8 @@ app.use(limiter);
 
 app.use(
   cors({
-    origin: 'https://paisa-ko-hisab-kitabb.onrender.com/', 
+    // Use CLIENT_URL when provided; otherwise allow all origins (development)
+    origin: process.env.CLIENT_URL || true,
     credentials: true,
   })
 );
@@ -65,8 +66,22 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Expense Tracker API',
+    routes: {
+      auth: '/api/auth',
+      expenses: '/api/expenses',
+      reports: '/api/reports',
+      health: '/api/health',
+    },
+  });
+});
+
 // 404 handler
 app.use('*', (req, res) => {
+  console.warn(`404 - Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
     success: false,
     message: 'Route not found',

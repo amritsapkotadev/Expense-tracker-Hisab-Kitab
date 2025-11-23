@@ -20,9 +20,12 @@ const generateToken = (userId) => {
  */
 const signup = async (req, res) => {
   try {
+    console.log('Received signup request');
+    console.log('Request body:', req.body);
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
