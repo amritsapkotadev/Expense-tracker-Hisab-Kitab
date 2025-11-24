@@ -20,232 +20,191 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse animation-delay-4000"></div>
-        
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px),
-                             linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
-            backgroundSize: '50px 50px'
-          }}></div>
-        </div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#070709]">
 
-      <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
-        {/* Left Side - Branding & Features */}
-        <div className="text-white space-y-8 p-8">
-          {/* Logo/Brand */}
-          <div className="flex items-center space-x-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+      {/* Soft floating lights */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/30 blur-3xl rounded-full animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 blur-3xl rounded-full animate-pulse animation-delay-2000"></div>
+      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-blue-500/10 blur-3xl rounded-full animate-pulse animation-delay-4000 -translate-x-1/2 -translate-y-1/2"></div>
+
+      {/* Faint Grid */}
+      <div className="absolute inset-0 opacity-[0.06] pointer-events-none"
+        style={{
+          backgroundImage:
+            `linear-gradient(#ffffff 1px, transparent 1px),
+             linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
+
+        {/* LEFT SIDE */}
+        <div className="text-white px-6 py-10 space-y-10">
+
+          {/* Branding */}
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl shadow-xl flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
                 ExpenseTracker
               </h1>
-              <p className="text-purple-200 text-sm">Smart Finance Management</p>
+              <p className="text-purple-300/80 text-sm">Smart Finance Management</p>
             </div>
           </div>
 
-          {/* Main Heading */}
+          {/* Hero Section */}
           <div className="space-y-4">
-            <h2 className="text-5xl font-bold leading-tight">
-              Take Control of Your
-              <span className="bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
-                {" "}Finances
+            <h2 className="text-5xl font-extrabold leading-snug">
+              Manage Your Money,
+              <span className="block bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
+                Smarter & Faster
               </span>
             </h2>
-            <p className="text-xl text-purple-200 leading-relaxed">
-              Join thousands who are already managing their expenses smarter, faster, and more efficiently.
+            <p className="text-lg text-purple-200/90 max-w-md leading-relaxed">
+              Track expenses effortlessly with real-time analytics & AI-powered insights.
             </p>
           </div>
 
-          {/* Features List */}
-          <div className="space-y-6 mt-8">
-            <div className="flex items-center space-x-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-green-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-white">AI-Powered Insights</h3>
-                <p className="text-purple-200 text-sm">Smart spending analysis and recommendations</p>
-              </div>
-            </div>
+          {/* Feature Cards */}
+          <div className="space-y-5">
 
-            <div className="flex items-center space-x-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-blue-400" />
+            {[
+              {
+                icon: Sparkles,
+                color: "green",
+                title: "AI Insights",
+                desc: "Personalized spending intel."
+              },
+              {
+                icon: Shield,
+                color: "blue",
+                title: "Bank-Level Security",
+                desc: "We protect your financial data."
+              },
+              {
+                icon: Zap,
+                color: "purple",
+                title: "Instant Sync",
+                desc: "Access from any device instantly."
+              }
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="flex items-center p-4 bg-white/10 border border-white/20 rounded-xl backdrop-blur-md hover:bg-white/20 transition-all"
+              >
+                <div className={`w-10 h-10 bg-${f.color}-500/20 rounded-lg flex items-center justify-center`}>
+                  <f.icon className={`w-5 h-5 text-${f.color}-400`} />
+                </div>
+                <div className="ml-4">
+                  <h3 className="font-semibold text-white">{f.title}</h3>
+                  <p className="text-purple-200 text-sm">{f.desc}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-white">Bank-Level Security</h3>
-                <p className="text-purple-200 text-sm">Your data is encrypted and secure</p>
-              </div>
-            </div>
+            ))}
 
-            <div className="flex items-center space-x-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-purple-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-white">Real-time Sync</h3>
-                <p className="text-purple-200 text-sm">Access your data anywhere, anytime</p>
-              </div>
-            </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex space-x-6 pt-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">Only Me</div>
-              <div className="text-purple-200 text-sm">Active Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">Rs10000+</div>
-              <div className="text-purple-200 text-sm">Managed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">4.9★</div>
-              <div className="text-purple-200 text-sm">Rating( I gave )</div>
-            </div>
-          </div>
         </div>
 
-        {/* Right Side - Login Form */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 lg:p-10">
-          {/* Form Header */}
+        {/* RIGHT SIDE — LOGIN FORM */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-10">
+
+          {/* Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
-              <LogIn className="w-6 h-6 text-white" />
+              <LogIn className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-purple-200">Sign in to continue your financial journey</p>
+            <h1 className="text-3xl font-bold text-white">Welcome Back</h1>
+            <p className="text-purple-200 mt-1">Sign in to continue</p>
           </div>
 
-          {/* Login Form */}
+          {/* FORM */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email Field */}
+
+            {/* EMAIL */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
-                Email Address
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-purple-300 group-focus-within:text-purple-400 transition-colors" />
-                </div>
+              <label className="block text-sm text-white mb-2">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-300" />
                 <input
-                  {...register('email', {
-                    required: 'Email is required',
-                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email address' }
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" }
                   })}
-                  type="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  autoComplete="email"
-                  className="block w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:ring-2 focus:ring-purple-500 outline-none"
+                  placeholder="you@example.com"
                 />
               </div>
+
               {errors.email && (
-                <p className="mt-2 text-sm text-red-400 flex items-center">
-                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                  {errors.email.message}
-                </p>
+                <p className="text-red-400 mt-1 text-sm">{errors.email.message}</p>
               )}
             </div>
 
-            {/* Password Field */}
+            {/* PASSWORD */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
-                Password
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-purple-300 group-focus-within:text-purple-400 transition-colors" />
-                </div>
+              <label className="block text-sm text-white mb-2">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-300" />
                 <input
-                  {...register('password', { required: 'Password is required' })}
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
-                  className="block w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  {...register("password", { required: "Password is required" })}
+                  type={showPassword ? "text" : "password"}
+                  className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:ring-2 focus:ring-purple-500 outline-none"
+                  placeholder="Enter password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-purple-300 hover:text-purple-400 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300 hover:text-purple-400"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
+
               {errors.password && (
-                <p className="mt-2 text-sm text-red-400 flex items-center">
-                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                  {errors.password.message}
-                </p>
+                <p className="text-red-400 mt-1 text-sm">{errors.password.message}</p>
               )}
             </div>
 
-            {/* Forgot Password */}
-            <div className="flex justify-end">
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-purple-300 hover:text-white transition-colors duration-200 font-medium"
-              >
-                Forgot your password?
+            <div className="text-right">
+              <Link className="text-sm text-purple-300 hover:text-white" to="/forgot-password">
+                Forgot password?
               </Link>
             </div>
 
-            {/* Submit Button */}
+            {/* BUTTON */}
             <button
               type="submit"
               disabled={isLoading}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3 group"
+              className="w-full py-4 font-semibold text-white rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg transform hover:scale-[1.02] active:scale-[0.97] transition-all flex items-center justify-center gap-3"
             >
               {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Signing in...
-                </>
+                <div className="w-6 h-6 border-2 border-white border-t-transparent animate-spin rounded-full" />
               ) : (
                 <>
                   Sign In
-                  <ArrowRight className={`w-5 h-5 transform transition-transform duration-200 ${isHovered ? 'translate-x-1' : ''}`} />
+                  <ArrowRight className={`transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
                 </>
               )}
             </button>
           </form>
 
-          {/* Sign Up Link */}
-          <div className="text-center mt-6 pt-6 border-t border-white/20">
+          <div className="text-center mt-8 border-t border-white/20 pt-6">
             <p className="text-purple-200">
-              Don't have an account?{' '}
-              <Link 
-                to="/signup" 
-                className="text-white font-semibold hover:text-purple-300 transition-colors duration-200 inline-flex items-center gap-1"
-              >
-                Create one
-                <ArrowRight className="w-4 h-4" />
+              No account?{" "}
+              <Link className="text-white font-semibold hover:text-purple-300 inline-flex items-center gap-1" to="/signup">
+                Create one <ArrowRight className="w-4 h-4" />
               </Link>
             </p>
           </div>
 
-         
         </div>
       </div>
-
-
     </div>
   );
 };

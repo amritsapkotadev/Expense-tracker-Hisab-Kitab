@@ -2,7 +2,16 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
-import { Mail, ArrowLeft, Send, Shield, Clock, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
+import {
+  Mail,
+  ArrowLeft,
+  Send,
+  Shield,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
+} from 'lucide-react';
 
 const ForgotPassword = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -19,92 +28,91 @@ const ForgotPassword = () => {
 
   const onSubmit = async (data) => {
     const result = await forgotPassword(data.email);
-    
     if (result.success) {
       setIsSubmitted(true);
     }
   };
 
+  /* --------------------------
+      SUCCESS SCREEN
+  ----------------------------*/
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-60 h-60 bg-green-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-          <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#070709]">
 
-        <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 relative z-10">
-          {/* Success Header */}
+        {/* Floating Lights */}
+        <div className="absolute top-0 left-0 w-80 h-80 bg-green-500/30 blur-3xl rounded-full animate-pulse"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/20 blur-3xl rounded-full animate-pulse animation-delay-2000"></div>
+
+        {/* Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              `linear-gradient(#ffffff 1px, transparent 1px),
+               linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+          }}
+        />
+
+        <div className="w-full max-w-md bg-white/10 border border-white/20 backdrop-blur-xl shadow-2xl rounded-3xl p-10 relative z-10">
+
           <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
+            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-xl mb-4">
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Check Your Email</h1>
-            <p className="text-purple-200">
-              We've sent a password reset link to
-            </p>
+            <h1 className="text-3xl font-bold text-white">Check Your Email</h1>
+            <p className="text-purple-200 mt-2">A reset link was sent to:</p>
             <p className="text-green-300 font-semibold text-lg mt-1">{email}</p>
           </div>
 
-          {/* Instructions */}
-          <div className="space-y-6 mb-8">
-            <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-xl border border-white/10">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-blue-400 font-bold">1</span>
+          {/* Steps */}
+          <div className="space-y-5 mb-8">
+            {[
+              { label: "Check your inbox", desc: "Look for an email from ExpenseTracker", color: "blue" },
+              { label: "Click reset link", desc: "Follow the instructions inside", color: "purple" },
+              { label: "Create new password", desc: "Set your secure password", color: "green" },
+            ].map((step, i) => (
+              <div
+                key={i}
+                className="flex items-center p-4 bg-white/5 rounded-xl border border-white/10"
+              >
+                <div className={`w-10 h-10 bg-${step.color}-500/20 rounded-lg flex items-center justify-center font-bold text-${step.color}-400`}>
+                  {i + 1}
+                </div>
+                <div className="ml-4">
+                  <p className="text-white font-medium">{step.label}</p>
+                  <p className="text-purple-200 text-sm">{step.desc}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white font-medium">Check your inbox</p>
-                <p className="text-purple-200 text-sm">Look for an email from Hisab Kitab</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-xl border border-white/10">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-purple-400 font-bold">2</span>
-              </div>
-              <div>
-                <p className="text-white font-medium">Click reset link</p>
-                <p className="text-purple-200 text-sm">Follow the link in the email</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-xl border border-white/10">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-green-400 font-bold">3</span>
-              </div>
-              <div>
-                <p className="text-white font-medium">Create new password</p>
-                <p className="text-purple-200 text-sm">Set up your new secure password</p>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Help Text */}
+          {/* Help */}
           <div className="p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/20 mb-6">
             <div className="flex items-start space-x-3">
-              <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5" />
               <div>
-                <p className="text-yellow-200 text-sm font-medium mb-1">Didn't receive the email?</p>
+                <p className="text-yellow-200 text-sm font-medium mb-1">Didn’t receive the email?</p>
                 <p className="text-yellow-300 text-xs">
                   Check your spam folder or{' '}
                   <button
                     onClick={() => setIsSubmitted(false)}
-                    className="text-white font-semibold hover:text-yellow-200 underline"
+                    className="text-white underline font-semibold hover:text-yellow-200"
                   >
-                    try again with a different email
+                    try again
                   </button>
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Back to Login */}
+          {/* Back */}
           <Link
             to="/login"
-            className="flex items-center justify-center w-full py-3 px-4 border border-white/30 text-white rounded-xl hover:bg-white/10 transition-all duration-200 font-medium"
+            className="w-full flex items-center justify-center py-3 border border-white/30 text-white rounded-xl hover:bg-white/10 transition-all"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-5 h-5 mr-2" />
             Back to Sign In
           </Link>
         </div>
@@ -112,68 +120,76 @@ const ForgotPassword = () => {
     );
   }
 
+  /* --------------------------
+      MAIN FORM SCREEN
+  ----------------------------*/
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-60 h-60 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#070709]">
 
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 relative z-10">
-        {/* Header */}
+      {/* Floating lights */}
+      <div className="absolute top-0 left-0 w-80 h-80 bg-purple-600/30 blur-3xl rounded-full animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-500/20 blur-3xl rounded-full animate-pulse animation-delay-2000"></div>
+
+      {/* Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            `linear-gradient(#ffffff 1px, transparent 1px),
+             linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
+        }}
+      />
+
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl p-10 relative z-10">
+
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
+          <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-4">
             <Mail className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Reset Your Password</h1>
-          <p className="text-purple-200">
-            Enter your email and we'll send you a secure reset link
-          </p>
+          <h1 className="text-3xl font-bold text-white">Reset Password</h1>
+          <p className="text-purple-200 mt-2">Enter your email to get the reset link.</p>
         </div>
 
-        {/* Form */}
+        {/* FORM */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Email Field */}
+
+          {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
-              Email Address
-            </label>
-            <div className="relative group">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-purple-300 group-focus-within:text-purple-400 transition-colors" />
+            <label className="text-white block text-sm mb-2">Email Address</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-300" />
               <input
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: 'Please enter a valid email address',
+                    message: 'Enter a valid email',
                   },
                 })}
-                type="email"
-                id="email"
-                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                placeholder="Enter your email address"
-                autoComplete="email"
+                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 text-white rounded-xl placeholder-purple-300 focus:ring-2 focus:ring-purple-500 outline-none"
+                placeholder="you@example.com"
               />
             </div>
+
             {errors.email && (
-              <p className="mt-2 text-sm text-red-400 flex items-center">
+              <p className="text-red-400 text-sm mt-2 flex items-center">
                 <AlertCircle className="w-4 h-4 mr-1" />
                 {errors.email.message}
               </p>
             )}
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.97] transition-all flex items-center justify-center gap-3"
           >
             {isLoading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Sending Reset Link...
+                <div className="w-6 h-6 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                Sending...
               </>
             ) : (
               <>
@@ -184,45 +200,49 @@ const ForgotPassword = () => {
           </button>
         </form>
 
-        {/* Back to Login */}
-        <div className="text-center mt-6">
-          <Link
-            to="/login"
-            className="flex items-center justify-center text-purple-200 hover:text-white transition-colors duration-200"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+        {/* Back */}
+        <div className="text-center mt-8">
+          <Link className="text-purple-200 hover:text-white flex items-center justify-center gap-2" to="/login">
+            <ArrowLeft className="w-4 h-4" />
             Back to Sign In
           </Link>
         </div>
 
-        {/* Security Information */}
-        <div className="mt-8 space-y-4">
-          <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg border border-white/10">
-            <Shield className="w-5 h-5 text-green-400 flex-shrink-0" />
-            <div>
-              <p className="text-white text-sm font-medium">Secure & Encrypted</p>
-              <p className="text-purple-200 text-xs">Your email is protected with bank-level security</p>
+        {/* INFO CARDS */}
+        <div className="mt-10 space-y-4">
+          {[
+            {
+              icon: Shield,
+              color: "green",
+              title: "Secure & Encrypted",
+              desc: "Your email is protected with bank-level security",
+            },
+            {
+              icon: Clock,
+              color: "blue",
+              title: "Quick Process",
+              desc: "Reset links expire in 1 hour",
+            },
+            {
+              icon: Sparkles,
+              color: "purple",
+              title: "Instant Delivery",
+              desc: "Emails are delivered within seconds",
+            },
+          ].map((c, i) => (
+            <div
+              key={i}
+              className="flex items-center p-4 bg-white/5 rounded-xl border border-white/10"
+            >
+              <c.icon className={`w-6 h-6 text-${c.color}-400 flex-shrink-0`} />
+              <div className="ml-4">
+                <p className="text-white font-medium text-sm">{c.title}</p>
+                <p className="text-purple-200 text-xs">{c.desc}</p>
+              </div>
             </div>
-          </div>
-          
-          <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg border border-white/10">
-            <Clock className="w-5 h-5 text-blue-400 flex-shrink-0" />
-            <div>
-              <p className="text-white text-sm font-medium">Quick Process</p>
-              <p className="text-purple-200 text-xs">Reset links expire in 1 hour for your security</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg border border-white/10">
-            <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0" />
-            <div>
-              <p className="text-white text-sm font-medium">Instant Delivery</p>
-              <p className="text-purple-200 text-xs">Links are typically delivered within seconds</p>
-            </div>
-          </div>
+          ))}
         </div>
 
-        
       </div>
     </div>
   );
