@@ -344,10 +344,32 @@ For other email providers, check their documentation for SMTP settings.
 ### Project Structure Guidelines
 
 - **Components**: Reusable UI components
+  - `/components/ui/`: Core design system components (Button, Input, Card, Modal, Badge)
+  - `/components/`: Application-specific components (Sidebar, ProtectedRoute)
 - **Pages**: Route-level components
 - **Context**: Global state management
 - **Utils**: Helper functions and API clients
 - **Styles**: Global CSS and Tailwind configuration
+  - `design-tokens.css`: CSS custom properties for the design system
+  - `global.css`: Global styles and Tailwind layers
+
+### Design System
+
+The application uses a comprehensive design system with:
+
+- **Color System**: 5-step hierarchy (Primary, Primary-variant, Background, Surface, Accent)
+- **Typography**: Standardized font scale, weights, and line heights
+- **Spacing**: 4px base unit with consistent scale
+- **Components**: Reusable UI components following accessibility guidelines
+
+📖 **For detailed design system documentation**, see [frontend/DESIGN.md](frontend/DESIGN.md)
+
+**Key Design Files:**
+- `frontend/src/styles/design-tokens.css` - All design tokens (colors, typography, spacing)
+- `frontend/tailwind.config.js` - Tailwind theme configuration
+- `frontend/src/components/ui/` - Reusable UI components
+- `frontend/DESIGN.md` - Complete design system guide
+- `frontend/QA_CHECKLIST.md` - Accessibility and responsive testing checklist
 
 ## 🤝 Contributing
 
