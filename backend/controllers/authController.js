@@ -59,22 +59,24 @@ const signup = async (req, res) => {
 
     await user.save();
 
-    // Send OTP email (skip if email not configured)
+    // Send OTP email asynchronously (non-blocking)
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      try {
-        await sendOTPEmail(email, name, otp);
-      } catch (emailError) {
-        console.error('Email sending failed:', emailError);
-        // Don't fail the signup if email fails
-      }
+      // Send email in background, don't wait for it
+      sendOTPEmail(email, name, otp)
+        .then(() => console.log(`✅ OTP email sent to ${email}`))
+        .catch(emailError => {
+          console.error('❌ Email sending failed:', emailError.message);
+          console.log(`📧 OTP for ${email} is: ${otp}`);
+        });
     } else {
-      console.log('Email not configured. OTP for', email, 'is:', otp);
+      console.log(`📧 Email not configured. OTP for ${email} is: ${otp}`);
     }
 
     const message = process.env.EMAIL_USER && process.env.EMAIL_PASS 
       ? 'User registered successfully. Please check your email for OTP verification.'
       : 'User registered successfully. Check the server console for OTP.';
 
+    // Respond immediately without waiting for email
     res.status(201).json({
       success: true,
       message: message,
@@ -266,28 +268,30 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate reset token
-    const resetToken = generateResetToken();
-    const resetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    // Generate OTP for reset
+    const otp = generateOTP();
+    const otpExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = resetExpires;
+    user.otp = otp;
+    user.otpExpires = otpExpires;
     await user.save();
 
-    // Send reset email
-    try {
-      await sendPasswordResetEmail(email, user.name, resetToken);
-    } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to send reset email'
-      });
+    // Send OTP email asynchronously (non-blocking)
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      sendOTPEmail(email, user.name, otp)
+        .then(() => console.log(`✅ Password reset OTP sent to ${email}`))
+        .catch(emailError => {
+          console.error('❌ Email sending failed:', emailError.message);
+          console.log(`📧 Reset OTP for ${email} is: ${otp}`);
+        });
+    } else {
+      console.log(`📧 Email not configured. Reset OTP for ${email} is: ${otp}`);
     }
 
+    // Respond immediately without waiting for email
     res.json({
       success: true,
-      message: 'If the email exists, a password reset link has been sent'
+      message: 'If the email exists, a password reset OTP has been sent'
     });
   } catch (error) {
     console.error('Forgot password error:', error);
@@ -295,6 +299,75 @@ const forgotPassword = async (req, res) => {
       success: false,
       message: 'Internal server error during password reset request'
     });
+  }
+};
+
+/**
+ * Reset password using email + OTP
+ */
+const resetPasswordWithOTP = async (req, res) => {
+  try {
+    const { email, otp, password } = req.body;
+
+    if (!email || !otp || !password) {
+      return res.status(400).json({ success: false, message: 'Email, OTP and password are required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid email or OTP' });
+    }
+
+    if (!user.otp || user.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    if (user.otpExpires && new Date() > user.otpExpires) {
+      return res.status(400).json({ success: false, message: 'OTP has expired' });
+    }
+
+    // Update password and clear OTP fields
+    user.password = password;
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+
+    res.json({ success: true, message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Reset password (OTP) error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error during password reset' });
+  }
+};
+
+/**
+ * Verify reset OTP (without changing password)
+ */
+const verifyResetOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid email or OTP' });
+    }
+
+    if (!user.otp || user.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    if (user.otpExpires && new Date() > user.otpExpires) {
+      return res.status(400).json({ success: false, message: 'OTP has expired' });
+    }
+
+    // OTP valid
+    res.json({ success: true, message: 'OTP verified' });
+  } catch (error) {
+    console.error('Verify reset OTP error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error during OTP verification' });
   }
 };
 
@@ -381,5 +454,7 @@ module.exports = {
   login,
   forgotPassword,
   resetPassword,
+  resetPasswordWithOTP,
+  verifyResetOTP,
   getProfile
 };
