@@ -23,9 +23,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration
-// Use CLIENT_URL env var in production (e.g. https://your-frontend.com)
-// Allow common local dev origins as well
+ 
 const envClientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : null;
 const allowedOrigins = [
   envClientUrl,
