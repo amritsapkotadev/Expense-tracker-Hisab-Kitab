@@ -55,6 +55,10 @@ const createTransporter = async () => {
         });
       } catch (oauthError) {
         console.log('⚠️  OAuth2 failed, falling back to app password');
+        console.log('OAuth2 Error:', oauthError.message);
+        console.log('CLIENT_ID exists:', !!process.env.GMAIL_CLIENT_ID);
+        console.log('CLIENT_SECRET exists:', !!process.env.GMAIL_CLIENT_SECRET);
+        console.log('REFRESH_TOKEN exists:', !!process.env.GMAIL_REFRESH_TOKEN);
       }
     }
 
