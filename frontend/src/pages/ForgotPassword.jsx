@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
+import { authAPI } from '../utils/api';
+import { toast } from 'react-toastify';
+import { Eye, EyeOff } from 'lucide-react';
 import {
   Mail,
   ArrowLeft,
@@ -15,7 +18,14 @@ import {
 
 const ForgotPassword = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [step, setStep] = useState('request'); // 'request' | 'verify' | 'change' | 'done'
   const { forgotPassword, isLoading } = useAuth();
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -26,17 +36,68 @@ const ForgotPassword = () => {
 
   const email = watch('email', '');
 
+  const [serverMessage, setServerMessage] = useState('');
+  const [verifiedOtp, setVerifiedOtp] = useState('');
+
   const onSubmit = async (data) => {
+    setServerError('');
     const result = await forgotPassword(data.email);
     if (result.success) {
       setIsSubmitted(true);
+      setStep('verify');
+      setServerMessage(result.message || 'If the email exists, a reset OTP has been sent');
+    } else if (result.error) {
+      setServerError(result.error);
+    }
+  };
+
+  const handleVerifyOTP = async (vals) => {
+    setServerError('');
+    setOtpLoading(true);
+    try {
+      const { otp } = vals;
+      const resp = await authAPI.verifyResetOTP({ email, otp });
+      if (resp.data?.success) {
+        setVerifiedOtp(otp);
+        setStep('change');
+        toast.success('OTP verified — you can now set a new password', { autoClose: 3000, pauseOnHover: true });
+      }
+    } catch (err) {
+      setServerError(err.response?.data?.message || 'OTP verification failed');
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleChangePassword = async (vals) => {
+    setServerError('');
+    setOtpLoading(true);
+    try {
+      const { password, confirmPassword } = vals;
+      if (password !== confirmPassword) {
+        setServerError('Passwords do not match');
+        setOtpLoading(false);
+        return;
+      }
+      const resp = await authAPI.resetPasswordOTP({ email, otp: verifiedOtp, password });
+      if (resp.data?.success) {
+        setResetSuccess(true);
+        setStep('done');
+        toast.success('Password changed — redirecting to home', { autoClose: 3000, pauseOnHover: true });
+        // navigate after toast autoClose + small buffer so user sees it
+        setTimeout(() => navigate('/'), 3200);
+      }
+    } catch (err) {
+      setServerError(err.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setOtpLoading(false);
     }
   };
 
   /* --------------------------
       SUCCESS SCREEN
   ----------------------------*/
-  if (isSubmitted) {
+  if (step === 'done' || resetSuccess) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#070709]">
 
@@ -62,15 +123,17 @@ const ForgotPassword = () => {
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-white">Check Your Email</h1>
-            <p className="text-purple-200 mt-2">A reset link was sent to:</p>
+            <p className="text-purple-200 mt-2">A reset OTP was sent to:</p>
             <p className="text-green-300 font-semibold text-lg mt-1">{email}</p>
+            {serverMessage && <p className="text-sm text-purple-200 mt-3">{serverMessage}</p>}
+            <p className="text-xs text-purple-300 mt-2">If emails are not configured, check the backend server console for the OTP.</p>
           </div>
 
           {/* Steps */}
           <div className="space-y-5 mb-8">
             {[
               { label: "Check your inbox", desc: "Look for an email from ExpenseTracker", color: "blue" },
-              { label: "Click reset link", desc: "Follow the instructions inside", color: "purple" },
+              { label: "Enter OTP", desc: "Enter the 6-digit code sent to your email", color: "purple" },
               { label: "Create new password", desc: "Set your secure password", color: "green" },
             ].map((step, i) => (
               <div
@@ -148,62 +211,127 @@ const ForgotPassword = () => {
             <Mail className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white">Reset Password</h1>
-          <p className="text-purple-200 mt-2">Enter your email to get the reset link.</p>
+          <p className="text-purple-200 mt-2">Enter your email to receive a 6-digit OTP for resetting password.</p>
         </div>
-
         {/* FORM */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {step === 'request' && (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-          {/* Email */}
-          <div>
-            <label className="text-white block text-sm mb-2">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-300" />
-              <input
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: 'Enter a valid email',
-                  },
-                })}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 text-white rounded-xl placeholder-purple-300 focus:ring-2 focus:ring-purple-500 outline-none"
-                placeholder="you@example.com"
-              />
+            {/* Email */}
+            <div>
+              <label className="text-white block text-sm mb-2">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-300" />
+                <input
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Enter a valid email',
+                    },
+                  })}
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 text-white rounded-xl placeholder-purple-300 focus:ring-2 focus:ring-purple-500 outline-none"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              {errors.email && (
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-1" />
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
-            {errors.email && (
-              <p className="text-red-400 text-sm mt-2 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.97] transition-all flex items-center justify-center gap-3"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Send OTP
+                </>
+              )}
+            </button>
+          </form>
+        )}
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.97] transition-all flex items-center justify-center gap-3"
-          >
-            {isLoading ? (
-              <>
-                <div className="w-6 h-6 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                Sending...
-              </>
-            ) : (
-              <>
-                <Send className="w-5 h-5" />
-                Send Reset Link
-              </>
-            )}
-          </button>
-        </form>
+        {step === 'verify' && (
+          <form onSubmit={handleSubmit(handleVerifyOTP)} className="space-y-4">
+            {serverMessage && <div className="text-sm text-purple-200 mb-2">{serverMessage}</div>}
+            <div>
+              <label className="text-white block text-sm mb-2">Email Address</label>
+              <input value={email} readOnly className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white" />
+            </div>
+
+            <div>
+              <label className="text-white block text-sm mb-2">OTP</label>
+              <input {...register('otp', { required: 'OTP is required', minLength: 6, maxLength: 6 })} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white" />
+            </div>
+
+            {serverError && <div className="text-sm text-rose-400">{serverError}</div>}
+
+            <button type="submit" disabled={otpLoading} className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl text-white font-semibold">
+              {otpLoading ? 'Verifying...' : 'Verify OTP'}
+            </button>
+          </form>
+        )}
+
+        {step === 'change' && (
+          <form onSubmit={handleSubmit(handleChangePassword)} className="space-y-4">
+            <div>
+              <label className="text-white block text-sm mb-2">Email Address</label>
+              <input value={email} readOnly className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white" />
+            </div>
+
+            <div>
+              <label className="text-white block text-sm mb-2">New Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  {...register('password', { required: 'Password required', minLength: 6 })}
+                  className="w-full pr-10 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white"
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300">
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-white block text-sm mb-2">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  {...register('confirmPassword', { required: 'Confirm password' })}
+                  className="w-full pr-10 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white"
+                />
+                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300">
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {serverError && <div className="text-sm text-rose-400">{serverError}</div>}
+
+            <button type="submit" disabled={otpLoading} className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl text-white font-semibold">
+              {otpLoading ? 'Resetting...' : 'Reset Password'}
+            </button>
+          </form>
+        )}
 
         {/* Back */}
         <div className="text-center mt-8">
           <Link className="text-purple-200 hover:text-white flex items-center justify-center gap-2" to="/login">
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Sign In
           </Link>
         </div>
