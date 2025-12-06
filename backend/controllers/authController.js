@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const { generateOTP, generateResetToken } = require('../utils/generateOTP');
-// Use SendGrid for email (falls back to logging if not configured)
-const { sendOTPEmail, sendPasswordResetEmail } = require('../utils/sendEmailSendGrid');
+// Use nodemailer for email
+const { sendOTPEmail, sendPasswordResetEmail } = require('../utils/sendEmail');
 
 /**
  * Generate JWT token

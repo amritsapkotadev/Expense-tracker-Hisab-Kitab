@@ -1,27 +1,30 @@
 const nodemailer = require('nodemailer');
-
-/**
- * Create and return a reusable transporter object using Gmail
- */
+ 
 const createTransporter = () => {
   try {
+    // Check if email credentials are configured
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log('⚠️  Email credentials not configured');
+      return null;
+    }
+
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      port: 587,
+      host: 'smtp.gmail.com',
+      port: 465, // Use SSL port instead of TLS
+      secure: true, // Use SSL
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
       },
-      // Add timeout to prevent hanging
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 10000,
-      socketTimeout: 10000
+      tls: {
+        rejectUnauthorized: false // Accept self-signed certificates
+      }
     });
 
     return transporter;
   } catch (error) {
     console.error('❌ Error creating email transporter:', error);
-    throw error;
+    return null;
   }
 };
 
@@ -36,24 +39,29 @@ const sendOTPEmail = async (email, name, otp) => {
   try {
     const transporter = createTransporter();
 
+    if (!transporter) {
+      console.log('📧 OTP for', email, 'is:', otp);
+      return { success: true, messageId: 'no-email-configured' };
+    }
+
     const mailOptions = {
-      from: `"Expense Tracker" <${process.env.EMAIL_USER}>`,
+      from: `"Hisab Kitab" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Verify Your Email - Expense Tracker',
+      subject: 'Verify Your Email - Hisab Kitab',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 30px; border-radius: 10px; text-align: center;">
-            <h1 style="color: #fff; margin: 0; font-size: 28px;">Expense Tracker</h1>
+          <div style="background: linear-gradient(135deg, #22d3ee, #7c3aed); padding: 30px; border-radius: 10px; text-align: center;">
+            <h1 style="color: #fff; margin: 0; font-size: 28px;">Hisab Kitab</h1>
             <p style="color: #fff; font-size: 16px; margin-top: 10px;">Verify Your Email Address</p>
           </div>
           <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
             <h2>Hello ${name} 👋</h2>
             <p>Use the following OTP code to verify your email:</p>
-            <div style="background: #667eea; color: #fff; font-size: 24px; font-weight: bold; letter-spacing: 3px; border-radius: 8px; padding: 15px; text-align: center;">
+            <div style="background: linear-gradient(135deg, #22d3ee, #7c3aed); color: #fff; font-size: 32px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; padding: 20px; text-align: center;">
               ${otp}
             </div>
-            <p style="margin-top: 10px;">This code will expire in 5 minutes.</p>
-            <p>If you didn’t sign up for Expense Tracker, you can safely ignore this email.</p>
+            <p style="margin-top: 15px; color: #666;">This code will expire in 15 minutes.</p>
+            <p style="color: #666;">If you didn't sign up for Hisab Kitab, you can safely ignore this email.</p>
           </div>
           <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
             <p>© ${new Date().getFullYear()} Expense Tracker. All rights reserved.</p>
@@ -63,10 +71,11 @@ const sendOTPEmail = async (email, name, otp) => {
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log('✅ OTP email sent successfully:', result.messageId);
+    console.log('✅ OTP email sent successfully to', email);
     return result;
   } catch (error) {
     console.error('❌ Error sending OTP email:', error);
+    console.log('📧 OTP for', email, 'is:', otp);
     throw error;
   }
 };
@@ -81,40 +90,47 @@ const sendOTPEmail = async (email, name, otp) => {
 const sendPasswordResetEmail = async (email, name, resetToken) => {
   try {
     const transporter = createTransporter();
+
+    if (!transporter) {
+      console.log('📧 Password Reset OTP for', email, 'is:', resetToken);
+      return { success: true, messageId: 'no-email-configured' };
+    }
+
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
 
     const mailOptions = {
-      from: `"Expense Tracker" <${process.env.EMAIL_USER}>`,
+      from: `"Hisab Kitab" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Reset Your Password - Expense Tracker',
+      subject: 'Password Reset - Hisab Kitab',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 30px; border-radius: 10px; text-align: center;">
-            <h1 style="color: #fff; margin: 0;">Expense Tracker</h1>
+          <div style="background: linear-gradient(135deg, #7c3aed, #d946ef); padding: 30px; border-radius: 10px; text-align: center;">
+            <h1 style="color: #fff; margin: 0;">Hisab Kitab</h1>
             <p style="color: #fff; font-size: 16px; margin-top: 10px;">Password Reset Request</p>
           </div>
           <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
             <h2>Hello ${name},</h2>
             <p>We received a request to reset your password. Click the button below to reset it:</p>
             <div style="text-align: center; margin: 20px 0;">
-              <a href="${resetUrl}" style="background: #667eea; color: #fff; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">Reset Password</a>
+              <a href="${resetUrl}" style="background: linear-gradient(135deg, #7c3aed, #d946ef); color: #fff; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">Reset Password</a>
             </div>
-            <p>If the button doesn’t work, copy and paste this link into your browser:</p>
-            <p><a href="${resetUrl}" style="color: #667eea;">${resetUrl}</a></p>
-            <p>This link will expire in 1 hour. If you didn’t request this, please ignore this email.</p>
+            <p>If the button doesn't work, copy and paste this link into your browser:</p>
+            <p><a href="${resetUrl}" style="color: #7c3aed;">${resetUrl}</a></p>
+            <p>This link will expire in 1 hour. If you didn't request this, please ignore this email.</p>
           </div>
           <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© ${new Date().getFullYear()} Expense Tracker. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Hisab Kitab. All rights reserved.</p>
           </div>
         </div>
       `
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully:', result.messageId);
+    console.log('✅ Password reset email sent successfully to', email);
     return result;
   } catch (error) {
     console.error('❌ Error sending password reset email:', error);
+    console.log('📧 Password Reset OTP for', email, 'is:', resetToken);
     throw error;
   }
 };
