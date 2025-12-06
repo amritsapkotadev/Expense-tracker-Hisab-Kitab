@@ -191,8 +191,9 @@ export const AuthProvider = ({ children }) => {
   const forgotPassword = async (email) => {
     try {
       const response = await authAPI.forgotPassword(email);
-      toast.success(response.data.message);
-      return { success: true };
+      const msg = response.data?.message || 'If the email exists, a password reset OTP has been sent';
+      toast.success(msg);
+      return { success: true, message: msg };
     } catch (error) {
       const message = error.response?.data?.message || 'Failed to send reset email';
       toast.error(message);

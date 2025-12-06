@@ -1,16 +1,47 @@
-# Expense Tracker - Full Stack Web Application
+# 💰 Expense Tracker (Hisab Kitab) - Full Stack Web Application
 
 A comprehensive expense management system built with React frontend and Node.js backend. Track your expenses, analyze spending patterns, and generate detailed reports with beautiful visualizations.
 
-## 🚀 Features
+🌐 **Live Demo**: [Coming Soon]
 
-- **🔐 User Authentication**: Secure signup, login, OTP verification, and password reset
-- **💰 Expense Management**: Add, edit, delete expenses with categories and tags
-- **📊 Data Visualization**: Interactive charts showing spending patterns and trends
-- **📈 Reports & Analytics**: Monthly summaries, category breakdowns, and CSV export
-- **📱 Responsive Design**: Works seamlessly on desktop and mobile devices
-- **🔒 Security**: JWT authentication, password hashing, and protected routes
-- **📧 Email Integration**: OTP verification and password reset via email
+## ✨ Features
+
+- **🔐 Secure Authentication**: 
+  - Email/password signup and login
+  - OTP verification via email for signup
+  - OTP-based password reset (no email links needed)
+  - JWT token-based authentication
+  
+- **💰 Expense Management**: 
+  - Add, edit, delete expenses with ease
+  - 13 built-in categories (Food, Transport, Shopping, etc.)
+  - Custom tags for better organization
+  - Date tracking and notes
+
+- **📊 Data Visualization**: 
+  - Interactive charts showing spending patterns
+  - Category-wise breakdowns
+  - Monthly/weekly trends
+  - Real-time statistics
+
+- **📈 Reports & Analytics**: 
+  - Monthly and weekly summaries
+  - Category analysis with insights
+  - Export to CSV for external analysis
+  - Email reports directly to your inbox
+
+- **📱 Responsive Design**: 
+  - Modern glassmorphism UI
+  - Works on desktop, tablet, and mobile
+  - Dark gradient theme
+  - Smooth animations
+
+- **🔒 Security**: 
+  - Password hashing with bcrypt
+  - JWT authentication
+  - Protected API routes
+  - Rate limiting
+  - CORS protection
 
 ## 🛠 Tech Stack
 
@@ -281,41 +312,56 @@ For other email providers, check their documentation for SMTP settings.
 
 ## 🚀 Deployment
 
-### Backend Deployment (Heroku Example)
+### Production Deployment Guide
 
-1. **Create a Heroku app**:
-   ```bash
-   heroku create your-app-name
-   ```
+📖 **See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete step-by-step deployment instructions.**
 
-2. **Set environment variables**:
-   ```bash
-   heroku config:set MONGO_URI=your_mongodb_uri
-   heroku config:set JWT_SECRET=your_jwt_secret
-   heroku config:set EMAIL_USER=your_email
-   heroku config:set EMAIL_PASS=your_password
-   heroku config:set CLIENT_URL=https://your-frontend-url.com
-   ```
+The deployment guide includes:
+- ✅ MongoDB Atlas database setup
+- ✅ Gmail OTP configuration
+- ✅ Render backend deployment
+- ✅ Render frontend deployment
+- ✅ Environment variable configuration
+- ✅ CORS setup
+- ✅ Testing procedures
+- ✅ Troubleshooting tips
 
-3. **Deploy**:
-   ```bash
-   git push heroku main
-   ```
+### Quick Deployment Steps
 
-### Frontend Deployment (Vercel Example)
+**Prerequisites:**
+- GitHub account
+- Render account (free tier available)
+- MongoDB Atlas account (free tier available)
+- Gmail account (for OTP emails)
 
-1. **Build the project**:
-   ```bash
-   npm run build
-   ```
+**Deployment Flow:**
+1. Push code to GitHub
+2. Create MongoDB Atlas cluster and get connection string
+3. Configure Gmail App Password for OTP
+4. Deploy backend to Render with environment variables
+5. Deploy frontend to Render with API URL
+6. Update CORS configuration
+7. Test the application
 
-2. **Deploy to Vercel**:
-   ```bash
-   npx vercel --prod
-   ```
+**Environment Variables Needed:**
 
-3. **Update environment variables** in Vercel dashboard:
-   - `VITE_API_URL`: Your backend API URL
+Backend (Render):
+```env
+NODE_ENV=production
+PORT=4000
+MONGO_URI=mongodb+srv://...
+JWT_SECRET=your_secret_key
+CLIENT_URL=https://your-frontend.onrender.com
+EMAIL_USER=your@gmail.com
+EMAIL_PASS=your_app_password
+```
+
+Frontend (Render):
+```env
+VITE_API_URL=https://your-backend.onrender.com/api
+```
+
+📚 For detailed instructions with screenshots and troubleshooting, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 
 ### Production Considerations
 

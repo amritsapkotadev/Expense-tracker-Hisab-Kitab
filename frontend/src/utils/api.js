@@ -47,6 +47,8 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   resetPassword: (resetData) => api.post('/auth/reset-password', resetData),
+  resetPasswordOTP: (data) => api.post('/auth/reset-password-otp', data),
+  verifyResetOTP: (data) => api.post('/auth/verify-reset-otp', data),
   getProfile: () => api.get('/auth/profile'),
 };
 
