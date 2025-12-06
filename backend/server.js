@@ -34,30 +34,27 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
-  'https://expense-tracker-hisab-kitab-2.onrender.com/' 
+  'https://expense-tracker-hisab-kitab-2.onrender.com'
 ].filter(Boolean);
 
 console.log('🔒 Allowed CORS origins:', allowedOrigins);
 
-// CORS options: allow requests from allowedOrigins, allow non-browser tools (no origin) and allow credentials
-const corsOptions = {
+ const corsOptions = {
   origin: function (origin, callback) {
-    // If no origin (curl/Postman/server-to-server), allow
-    if (!origin) return callback(null, true);
+     if (!origin) return callback(null, true);
 
     const normalizedOrigin = origin.replace(/\/$/, '');
     
     console.log('🌐 Request from origin:', normalizedOrigin);
     
-    // Allow in non-production (convenient for local dev) OR if origin is in whitelist
-    if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(normalizedOrigin)) {
+     if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
     
     console.log('❌ Origin not allowed:', normalizedOrigin);
     return callback(new Error('CORS policy: This origin is not allowed.'));
   },
-  credentials: true, // set to true if you need to send/receive cookies
+  credentials: true,  
 };
 
 app.use(cors(corsOptions));
