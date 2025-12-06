@@ -1,6 +1,34 @@
 const nodemailer = require('nodemailer');
- 
-const createTransporter = () => {
+const { google } = require('googleapis');
+
+/**
+ * Create OAuth2 client for Gmail API
+ */
+const createOAuth2Client = () => {
+  const OAuth2 = google.auth.OAuth2;
+  
+  // If OAuth credentials are provided, use them
+  if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET && process.env.GMAIL_REFRESH_TOKEN) {
+    const oauth2Client = new OAuth2(
+      process.env.GMAIL_CLIENT_ID,
+      process.env.GMAIL_CLIENT_SECRET,
+      'https://developers.google.com/oauthplayground'
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GMAIL_REFRESH_TOKEN
+    });
+
+    return oauth2Client;
+  }
+  
+  return null;
+};
+
+/**
+ * Create and return a reusable transporter object
+ */
+const createTransporter = async () => {
   try {
     // Check if email credentials are configured
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -8,10 +36,33 @@ const createTransporter = () => {
       return null;
     }
 
+    // Try OAuth2 first (works on Render)
+    const oauth2Client = createOAuth2Client();
+    if (oauth2Client) {
+      try {
+        const accessToken = await oauth2Client.getAccessToken();
+        
+        return nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            type: 'OAuth2',
+            user: process.env.EMAIL_USER,
+            clientId: process.env.GMAIL_CLIENT_ID,
+            clientSecret: process.env.GMAIL_CLIENT_SECRET,
+            refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+            accessToken: accessToken.token
+          }
+        });
+      } catch (oauthError) {
+        console.log('⚠️  OAuth2 failed, falling back to app password');
+      }
+    }
+
+    // Fallback to app password (may not work on Render due to SMTP blocking)
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 465, // Use SSL port instead of TLS
-      secure: true, // Use SSL
+      port: 465, // 
+      secure: true,  
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -37,7 +88,7 @@ const createTransporter = () => {
  */
 const sendOTPEmail = async (email, name, otp) => {
   try {
-    const transporter = createTransporter();
+    const transporter = await createTransporter();
 
     if (!transporter) {
       console.log('📧 OTP for', email, 'is:', otp);
@@ -89,7 +140,7 @@ const sendOTPEmail = async (email, name, otp) => {
  */
 const sendPasswordResetEmail = async (email, name, resetToken) => {
   try {
-    const transporter = createTransporter();
+    const transporter = await createTransporter();
 
     if (!transporter) {
       console.log('📧 Password Reset OTP for', email, 'is:', resetToken);
@@ -145,7 +196,7 @@ const sendPasswordResetEmail = async (email, name, resetToken) => {
  */
 const sendCSVReportEmail = async (email, name, csv, filename = 'expenses.csv') => {
   try {
-    const transporter = createTransporter();
+    const transporter = await createTransporter();
 
     const mailOptions = {
       from: `"Expense Tracker" <${process.env.EMAIL_USER}>`,
