@@ -114,7 +114,7 @@
 <div align="center">
 
 ### 🏠 Welcome Page
-<img src="./ss/Screenshot 2025-12-12 at 18.19.10.png" alt="Welcome Page" width="800"/>
+<img src="./frontend/ss/Screenshot 2025-12-12 at 18.19.10.png" alt="Welcome Page" width="800"/>
 
 *Modern AI-designed landing page with gradient animations*
 
@@ -124,16 +124,16 @@
 
 <table>
   <tr>
-    <td><img src="./ss/Screenshot 2025-12-12 at 18.28.16.png" alt="Login Page" width="400"/></td>
-    <td><img src="./ss/Screenshot 2025-12-12 at 18.28.30.png" alt="Signup Page" width="400"/></td>
+    <td><img src="./frontend/ss/Screenshot 2025-12-12 at 18.28.16.png" alt="Login Page" width="400"/></td>
+    <td><img src="./frontend/ss/Screenshot 2025-12-12 at 18.28.30.png" alt="Signup Page" width="400"/></td>
   </tr>
   <tr>
     <td align="center"><b>Login Page</b></td>
     <td align="center"><b>Signup Page</b></td>
   </tr>
   <tr>
-    <td><img src="./ss/Screenshot 2025-12-12 at 18.28.42.png" alt="OTP Verification" width="400"/></td>
-    <td><img src="./ss/Screenshot 2025-12-12 at 18.29.07.png" alt="Password Reset" width="400"/></td>
+    <td><img src="./frontend/ss/Screenshot 2025-12-12 at 18.28.42.png" alt="OTP Verification" width="400"/></td>
+    <td><img src="./frontend/ss/Screenshot 2025-12-12 at 18.29.07.png" alt="Password Reset" width="400"/></td>
   </tr>
   <tr>
     <td align="center"><b>OTP Verification</b></td>
@@ -149,8 +149,8 @@
 
 <table>
   <tr>
-    <td><img src="./ss/Screenshot 2025-12-12 at 18.29.15.png" alt="Dashboard" width="400"/></td>
-    <td><img src="./ss/Screenshot 2025-12-12 at 18.29.53.png" alt="Analytics" width="400"/></td>
+    <td><img src="./frontend/ss/Screenshot 2025-12-12 at 18.29.15.png" alt="Dashboard" width="400"/></td>
+    <td><img src="./frontend/ss/Screenshot 2025-12-12 at 18.29.53.png" alt="Analytics" width="400"/></td>
   </tr>
   <tr>
     <td align="center"><b>Main Dashboard</b></td>
@@ -163,7 +163,7 @@
 ---
 
 ### 💰 Expense Management
-<img src="./ss/Screenshot 2025-12-12 at 18.30.37.png" alt="Expense Management" width="800"/>
+<img src="./frontend/ss/Screenshot 2025-12-12 at 18.30.37.png" alt="Expense Management" width="800"/>
 
 *Easy-to-use interface for adding, editing, and managing expenses*
 
