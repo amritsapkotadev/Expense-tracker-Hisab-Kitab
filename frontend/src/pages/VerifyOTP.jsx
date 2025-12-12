@@ -120,14 +120,35 @@ const VerifyOTP = () => {
       <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
-            <Shield className="w-8 h-8 text-white" />
+          <div className="relative mx-auto mb-6 w-24 h-24">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 rounded-3xl blur-xl opacity-60 animate-pulse"></div>
+            <div className="relative w-24 h-24 bg-gradient-to-br from-cyan-400 via-purple-500 to-fuchsia-500 rounded-3xl flex items-center justify-center shadow-2xl">
+              <Shield className="w-12 h-12 text-white" strokeWidth={2.5} />
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Verify Your Email</h1>
-          <p className="text-purple-200">
-            We've sent a 6-digit verification code to
+          <h1 className="text-3xl font-black text-white mb-3 bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">Verify Your Email</h1>
+          <p className="text-purple-200 text-base">
+            We've sent a 6-digit code to
           </p>
-          <p className="text-green-300 font-semibold text-lg mt-1">{email}</p>
+          <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-xl backdrop-blur-sm">
+            <Mail className="w-4 h-4 text-cyan-400" />
+            <p className="text-cyan-300 font-semibold text-base">{email}</p>
+          </div>
+          
+          {/* Spam Folder Notice */}
+          <div className="mt-6 p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-2xl backdrop-blur-sm">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-lg">📬</span>
+              </div>
+              <div className="text-left flex-1">
+                <p className="text-yellow-200 text-sm font-semibold mb-1">Can't find the email?</p>
+                <p className="text-yellow-200/80 text-xs leading-relaxed">
+                  Check your <strong className="text-yellow-100">spam/junk folder</strong>. Sometimes our emails end up there. If you find it, mark it as "Not Spam" for future emails.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Form */}
