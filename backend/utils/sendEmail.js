@@ -1,85 +1,35 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
+const sgMail = require('@sendgrid/mail');
+
+// Initialize SendGrid with API key
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 /**
- * Create OAuth2 client for Gmail API
+ * Base email sending function using SendGrid API
  */
-const createOAuth2Client = () => {
-  const OAuth2 = google.auth.OAuth2;
-  
-  // If OAuth credentials are provided, use them
-  if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET && process.env.GMAIL_REFRESH_TOKEN) {
-    const oauth2Client = new OAuth2(
-      process.env.GMAIL_CLIENT_ID,
-      process.env.GMAIL_CLIENT_SECRET,
-      'https://developers.google.com/oauthplayground'
-    );
-
-    oauth2Client.setCredentials({
-      refresh_token: process.env.GMAIL_REFRESH_TOKEN
-    });
-
-    return oauth2Client;
-  }
-  
-  return null;
-};
-
-/**
- * Create and return a reusable transporter object
- */
-const createTransporter = async () => {
+const sendEmail = async ({ to, subject, text, html, attachments }) => {
   try {
-    // Check if email credentials are configured
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log('⚠️  Email credentials not configured');
-      return null;
+    if (!process.env.SENDGRID_API_KEY) {
+      console.log('⚠️  SendGrid API key not configured');
+      return { success: false, error: 'SendGrid not configured' };
     }
 
-    // Try OAuth2 first (works on Render)
-    const oauth2Client = createOAuth2Client();
-    if (oauth2Client) {
-      try {
-        const accessToken = await oauth2Client.getAccessToken();
-        
-        return nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            type: 'OAuth2',
-            user: process.env.EMAIL_USER,
-            clientId: process.env.GMAIL_CLIENT_ID,
-            clientSecret: process.env.GMAIL_CLIENT_SECRET,
-            refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-            accessToken: accessToken.token
-          }
-        });
-      } catch (oauthError) {
-        console.log('⚠️  OAuth2 failed, falling back to app password');
-        console.log('OAuth2 Error:', oauthError.message);
-        console.log('CLIENT_ID exists:', !!process.env.GMAIL_CLIENT_ID);
-        console.log('CLIENT_SECRET exists:', !!process.env.GMAIL_CLIENT_SECRET);
-        console.log('REFRESH_TOKEN exists:', !!process.env.GMAIL_REFRESH_TOKEN);
-      }
-    }
+    const msg = {
+      to,
+      from: process.env.EMAIL_USER || 'amritsapkota.dev@gmail.com', // Must be verified in SendGrid
+      subject,
+      text,
+      html,
+      attachments,
+    };
 
-    // Fallback to app password (may not work on Render due to SMTP blocking)
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465, // 
-      secure: true,  
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      },
-      tls: {
-        rejectUnauthorized: false // Accept self-signed certificates
-      }
-    });
-
-    return transporter;
+    const result = await sgMail.send(msg);
+    console.log('✅ Email sent:', result[0].statusCode);
+    return { success: true, result };
   } catch (error) {
-    console.error('❌ Error creating email transporter:', error);
-    return null;
+    console.error('❌ Error sending email:', error.response ? error.response.body : error);
+    throw error;
   }
 };
 
@@ -88,46 +38,34 @@ const createTransporter = async () => {
  * @param {string} email - Recipient email
  * @param {string} name - Recipient name
  * @param {string} otp - OTP code
- * @returns {Promise}
  */
 const sendOTPEmail = async (email, name, otp) => {
   try {
-    const transporter = await createTransporter();
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #22d3ee 0%, #7c3aed 100%); padding: 30px; border-radius: 10px; text-align: center;">
+          <h1 style="color: white; margin: 0;">Hisab Kitab</h1>
+        </div>
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-top: 20px;">
+          <h2 style="color: #1a1f3a;">Hello ${name}!</h2>
+          <p style="font-size: 16px; color: #4a5568;">Your verification code is:</p>
+          <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+            <span style="font-size: 32px; font-weight: bold; color: #7c3aed; letter-spacing: 5px;">${otp}</span>
+          </div>
+          <p style="font-size: 14px; color: #718096;">This code will expire in 10 minutes.</p>
+          <p style="font-size: 14px; color: #718096;">If you didn't request this code, please ignore this email.</p>
+        </div>
+      </div>
+    `;
 
-    if (!transporter) {
-      console.log('📧 OTP for', email, 'is:', otp);
-      return { success: true, messageId: 'no-email-configured' };
-    }
+    const text = `Hello ${name}!\n\nYour verification code is: ${otp}\n\nThis code will expire in 10 minutes.\n\nIf you didn't request this code, please ignore this email.`;
 
-    const mailOptions = {
-      from: `"Hisab Kitab" <${process.env.EMAIL_USER}>`,
+    return await sendEmail({
       to: email,
       subject: 'Verify Your Email - Hisab Kitab',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #22d3ee, #7c3aed); padding: 30px; border-radius: 10px; text-align: center;">
-            <h1 style="color: #fff; margin: 0; font-size: 28px;">Hisab Kitab</h1>
-            <p style="color: #fff; font-size: 16px; margin-top: 10px;">Verify Your Email Address</p>
-          </div>
-          <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
-            <h2>Hello ${name} 👋</h2>
-            <p>Use the following OTP code to verify your email:</p>
-            <div style="background: linear-gradient(135deg, #22d3ee, #7c3aed); color: #fff; font-size: 32px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; padding: 20px; text-align: center;">
-              ${otp}
-            </div>
-            <p style="margin-top: 15px; color: #666;">This code will expire in 15 minutes.</p>
-            <p style="color: #666;">If you didn't sign up for Hisab Kitab, you can safely ignore this email.</p>
-          </div>
-          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© ${new Date().getFullYear()} Expense Tracker. All rights reserved.</p>
-          </div>
-        </div>
-      `
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ OTP email sent successfully to', email);
-    return result;
+      text,
+      html,
+    });
   } catch (error) {
     console.error('❌ Error sending OTP email:', error);
     console.log('📧 OTP for', email, 'is:', otp);
@@ -140,52 +78,39 @@ const sendOTPEmail = async (email, name, otp) => {
  * @param {string} email - Recipient email
  * @param {string} name - Recipient name
  * @param {string} resetToken - Password reset token
- * @returns {Promise}
  */
 const sendPasswordResetEmail = async (email, name, resetToken) => {
   try {
-    const transporter = await createTransporter();
-
-    if (!transporter) {
-      console.log('📧 Password Reset OTP for', email, 'is:', resetToken);
-      return { success: true, messageId: 'no-email-configured' };
-    }
-
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #22d3ee 0%, #7c3aed 100%); padding: 30px; border-radius: 10px; text-align: center;">
+          <h1 style="color: white; margin: 0;">Hisab Kitab</h1>
+        </div>
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-top: 20px;">
+          <h2 style="color: #1a1f3a;">Hello ${name}!</h2>
+          <p style="font-size: 16px; color: #4a5568;">You requested to reset your password.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background: linear-gradient(135deg, #22d3ee 0%, #7c3aed 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+          </div>
+          <p style="font-size: 14px; color: #718096;">This link will expire in 1 hour.</p>
+          <p style="font-size: 14px; color: #718096;">If you didn't request this, please ignore this email.</p>
+          <p style="font-size: 12px; color: #a0aec0; margin-top: 20px;">Or copy this link: ${resetUrl}</p>
+        </div>
+      </div>
+    `;
 
-    const mailOptions = {
-      from: `"Hisab Kitab" <${process.env.EMAIL_USER}>`,
+    const text = `Hello ${name}!\n\nYou requested to reset your password.\n\nClick this link to reset your password: ${resetUrl}\n\nThis link will expire in 1 hour.\n\nIf you didn't request this, please ignore this email.`;
+
+    return await sendEmail({
       to: email,
       subject: 'Password Reset - Hisab Kitab',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #7c3aed, #d946ef); padding: 30px; border-radius: 10px; text-align: center;">
-            <h1 style="color: #fff; margin: 0;">Hisab Kitab</h1>
-            <p style="color: #fff; font-size: 16px; margin-top: 10px;">Password Reset Request</p>
-          </div>
-          <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
-            <h2>Hello ${name},</h2>
-            <p>We received a request to reset your password. Click the button below to reset it:</p>
-            <div style="text-align: center; margin: 20px 0;">
-              <a href="${resetUrl}" style="background: linear-gradient(135deg, #7c3aed, #d946ef); color: #fff; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">Reset Password</a>
-            </div>
-            <p>If the button doesn't work, copy and paste this link into your browser:</p>
-            <p><a href="${resetUrl}" style="color: #7c3aed;">${resetUrl}</a></p>
-            <p>This link will expire in 1 hour. If you didn't request this, please ignore this email.</p>
-          </div>
-          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© ${new Date().getFullYear()} Hisab Kitab. All rights reserved.</p>
-          </div>
-        </div>
-      `
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully to', email);
-    return result;
+      text,
+      html,
+    });
   } catch (error) {
     console.error('❌ Error sending password reset email:', error);
-    console.log('📧 Password Reset OTP for', email, 'is:', resetToken);
     throw error;
   }
 };
@@ -194,31 +119,40 @@ const sendPasswordResetEmail = async (email, name, resetToken) => {
  * Send CSV report email with attachment
  * @param {string} email - Recipient email
  * @param {string} name - Recipient name
- * @param {Buffer|string} csv - CSV content buffer or string
- * @param {string} filename - Attachment filename
- * @returns {Promise}
+ * @param {string} csv - CSV data as string
+ * @param {string} filename - CSV filename (optional)
  */
 const sendCSVReportEmail = async (email, name, csv, filename = 'expenses.csv') => {
   try {
-    const transporter = await createTransporter();
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #22d3ee 0%, #7c3aed 100%); padding: 30px; border-radius: 10px; text-align: center;">
+          <h1 style="color: white; margin: 0;">Hisab Kitab</h1>
+        </div>
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-top: 20px;">
+          <h2 style="color: #1a1f3a;">Hello ${name}!</h2>
+          <p style="font-size: 16px; color: #4a5568;">Your expense report is ready!</p>
+          <p style="font-size: 14px; color: #718096;">Please find your expense CSV report attached to this email.</p>
+        </div>
+      </div>
+    `;
 
-    const mailOptions = {
-      from: `"Expense Tracker" <${process.env.EMAIL_USER}>`,
+    const text = `Hello ${name}!\n\nYour expense report is ready! Please find your expense CSV report attached to this email.`;
+
+    return await sendEmail({
       to: email,
-      subject: 'Your Expense CSV Report',
-      text: `Hi ${name},\n\nPlease find attached your expense report CSV.\n\nRegards,\nExpense Tracker Team`,
+      subject: 'Your Expense CSV Report - Hisab Kitab',
+      text,
+      html,
       attachments: [
         {
+          content: Buffer.from(csv).toString('base64'),
           filename,
-          content: csv,
-          contentType: 'text/csv'
-        }
-      ]
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ CSV report email sent successfully:', result.messageId);
-    return result;
+          type: 'text/csv',
+          disposition: 'attachment',
+        },
+      ],
+    });
   } catch (error) {
     console.error('❌ Error sending CSV report email:', error);
     throw error;
@@ -228,5 +162,5 @@ const sendCSVReportEmail = async (email, name, csv, filename = 'expenses.csv') =
 module.exports = {
   sendOTPEmail,
   sendPasswordResetEmail,
-  sendCSVReportEmail
+  sendCSVReportEmail,
 };
