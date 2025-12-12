@@ -136,6 +136,9 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: message });
       toast.error(message);
       return { success: false, error: message };
+    } finally {
+      // Ensure loading is always reset
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
     }
   };
 
@@ -163,6 +166,9 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: message });
       toast.error(message);
       return { success: false, error: message };
+    } finally {
+      // Ensure loading is always reset
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
     }
   };
 
@@ -190,12 +196,16 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: message });
       toast.error(message);
       return { success: false, error: message };
+    } finally {
+      // Ensure loading is always reset
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
     }
   };
 
   // Forgot password function
   const forgotPassword = async (email) => {
     try {
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
       const response = await authAPI.forgotPassword(email);
       const msg = response.data?.message || 'If the email exists, a password reset OTP has been sent';
       toast.success(msg);
@@ -204,6 +214,9 @@ export const AuthProvider = ({ children }) => {
       const message = error.response?.data?.message || 'Failed to send reset email';
       toast.error(message);
       return { success: false, error: message };
+    } finally {
+      // Ensure loading is always reset
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
     }
   };
 
