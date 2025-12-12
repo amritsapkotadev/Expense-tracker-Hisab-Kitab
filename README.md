@@ -1,47 +1,87 @@
-# 💰 Expense Tracker (Hisab Kitab) - Full Stack Web Application
+# 💰 Hisab Kitab - Expense Tracker
 
-A comprehensive expense management system built with React frontend and Node.js backend. Track your expenses, analyze spending patterns, and generate detailed reports with beautiful visualizations.
+<div align="center">
 
-🌐 **Live Demo**: [Coming Soon]
+![Hisab Kitab Banner](https://img.shields.io/badge/Hisab_Kitab-Financial_Intelligence-00D9FF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMyAzdjE4aDhWM0gzem0xMCAwdjE4aDhWM2gtOHoiIGZpbGw9IndoaXRlIi8+PC9zdmc+)
+
+**A modern, AI-designed full-stack expense tracking application with beautiful UI/UX**
+
+[🚀 Live Demo](https://expense-tracker-hisab-kitab-2.onrender.com) • [📖 Documentation](#-documentation) • [🐛 Report Bug](https://github.com/amritsapkotadev/Expense-tracker-Hisab-Kitab/issues) • [✨ Request Feature](https://github.com/amritsapkotadev/Expense-tracker-Hisab-Kitab/issues)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-16.x-339933?logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/amritsapkotadev/Expense-tracker-Hisab-Kitab/pulls)
+
+</div>
+
+---
+
+## 📖 About The Project
+
+**Hisab Kitab** is a comprehensive expense management system that helps you take control of your finances. Built with modern web technologies and featuring an **AI-designed interface**, it combines powerful functionality with stunning aesthetics.
+
+### 🎯 Why Hisab Kitab?
+
+- ✨ **Beautiful UI/UX** - AI-crafted modern design with glassmorphism and smooth animations
+- 🔐 **Secure Authentication** - OTP-based email verification and password reset
+- 📊 **Smart Analytics** - Visual insights into your spending patterns
+- 📧 **Email Reports** - Get detailed CSV reports delivered to your inbox via SendGrid
+- 📱 **Fully Responsive** - Works flawlessly on desktop, tablet, and mobile
+- 🚀 **Production Ready** - Deployed on Render with MongoDB Atlas
+
+🌐 **Live Application**: [https://expense-tracker-hisab-kitab-2.onrender.com](https://expense-tracker-hisab-kitab-2.onrender.com)
 
 ## ✨ Features
 
-- **🔐 Secure Authentication**: 
-  - Email/password signup and login
-  - OTP verification via email for signup
-  - OTP-based password reset (no email links needed)
-  - JWT token-based authentication
-  
-- **💰 Expense Management**: 
-  - Add, edit, delete expenses with ease
-  - 13 built-in categories (Food, Transport, Shopping, etc.)
-  - Custom tags for better organization
-  - Date tracking and notes
+### 🔐 Authentication & Security
+- **Email/Password Authentication** - Secure user registration and login
+- **OTP Email Verification** - 6-digit OTP sent via SendGrid for account verification
+- **Password Reset Flow** - 3-step process: Email → OTP → New Password
+- **JWT Token-Based Auth** - Stateless authentication with access tokens
+- **Password Encryption** - bcryptjs hashing with salt rounds
+- **Protected Routes** - Client and server-side route protection
+- **Rate Limiting** - API request throttling to prevent abuse
+- **CORS Configuration** - Secure cross-origin resource sharing
+- **Helmet Security** - HTTP security headers
+- **Input Validation** - Comprehensive form and API validation
 
-- **📊 Data Visualization**: 
-  - Interactive charts showing spending patterns
-  - Category-wise breakdowns
-  - Monthly/weekly trends
-  - Real-time statistics
+### 💰 Expense Management
+- **CRUD Operations** - Create, Read, Update, Delete expenses
+- **13 Built-in Categories** - Food, Transport, Shopping, Bills, Entertainment, Healthcare, Education, Travel, Investment, Salary, Gifts, Others, Groceries
+- **Custom Tags** - Organize expenses with personalized tags
+- **Date Tracking** - Track when expenses occurred
+- **Notes & Descriptions** - Add detailed notes to each expense
+- **Amount Tracking** - Record expense amounts in your currency
+- **Pagination** - Efficient handling of large expense lists
+- **Search & Filter** - Find expenses by category, date, or amount
 
-- **📈 Reports & Analytics**: 
-  - Monthly and weekly summaries
-  - Category analysis with insights
-  - Export to CSV for external analysis
-  - Email reports directly to your inbox
+### 📊 Analytics & Visualization
+- **Interactive Dashboard** - Real-time overview of your finances
+- **Category Breakdown** - Pie charts showing spending by category
+- **Monthly Trends** - Line charts tracking spending over time
+- **Spending Statistics** - Total, average, and category-wise analysis
+- **Visual Reports** - Beautiful charts powered by Recharts
+- **Date Range Filters** - Analyze expenses for specific periods
 
-- **📱 Responsive Design**: 
-  - Modern glassmorphism UI
-  - Works on desktop, tablet, and mobile
-  - Dark gradient theme
-  - Smooth animations
+### 📧 Email & Reports
+- **Professional Email Templates** - Dark-themed HTML emails with brand gradients
+- **OTP Delivery** - 6-digit verification codes via SendGrid
+- **Password Reset Emails** - Secure password reset instructions
+- **CSV Report Generation** - Detailed expense reports in CSV format
+- **Email CSV Reports** - Receive reports directly in your inbox
+- **SendGrid Integration** - Reliable email delivery (100 emails/day free)
 
-- **🔒 Security**: 
-  - Password hashing with bcrypt
-  - JWT authentication
-  - Protected API routes
-  - Rate limiting
-  - CORS protection
+### 🎨 UI/UX Design
+- **AI-Crafted Interface** - Modern, intuitive design created by AI
+- **Glassmorphism Effects** - Frosted glass aesthetic with backdrop blur
+- **Gradient Themes** - Cyan, Violet, and Fuchsia color schemes
+- **Smooth Animations** - Polished transitions and micro-interactions
+- **Responsive Layout** - Optimized for mobile, tablet, and desktop
+- **Dark Mode Design** - Easy on the eyes with dark backgrounds
+- **Lucide Icons** - Beautiful, consistent iconography
+- **Toast Notifications** - User-friendly feedback messages
 
 ## 🛠 Tech Stack
 
@@ -56,20 +96,87 @@ A comprehensive expense management system built with React frontend and Node.js 
 - **React Hook Form** - Form handling and validation
 
 ### Backend
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - MongoDB object modeling
-- **JWT** - JSON Web Tokens for authentication
-- **Nodemailer** - Email sending
-- **bcrypt** - Password hashing
-- **Helmet** - Security middleware
-- **Express Rate Limit** - Rate limiting
+- **Node.js 16+** - JavaScript runtime
+- **Express.js 4.x** - Fast, unopinionated web framework
+- **MongoDB Atlas** - Cloud NoSQL database
+- **Mongoose 7.x** - Elegant MongoDB object modeling
+- **JWT (jsonwebtoken)** - Secure token-based authentication
+- **SendGrid (@sendgrid/mail)** - Reliable email delivery via API
+- **bcryptjs** - Industry-standard password hashing
+- **Helmet** - Security headers middleware
+- **Express Rate Limit** - API request rate limiting
+- **Express Validator** - Request validation and sanitization
+- **json2csv** - CSV generation for reports
+- **CORS** - Cross-Origin Resource Sharing
+
+## 📸 Screenshots
+
+<div align="center">
+
+### 🏠 Welcome Page
+<img src="./ss/Screenshot 2025-12-12 at 18.19.10.png" alt="Welcome Page" width="800"/>
+
+*Modern AI-designed landing page with gradient animations*
+
+---
+
+### 🔐 Authentication Flow
+
+<table>
+  <tr>
+    <td><img src="./ss/Screenshot 2025-12-12 at 18.28.16.png" alt="Login Page" width="400"/></td>
+    <td><img src="./ss/Screenshot 2025-12-12 at 18.28.30.png" alt="Signup Page" width="400"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Login Page</b></td>
+    <td align="center"><b>Signup Page</b></td>
+  </tr>
+  <tr>
+    <td><img src="./ss/Screenshot 2025-12-12 at 18.28.42.png" alt="OTP Verification" width="400"/></td>
+    <td><img src="./ss/Screenshot 2025-12-12 at 18.29.07.png" alt="Password Reset" width="400"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>OTP Verification</b></td>
+    <td align="center"><b>Password Reset</b></td>
+  </tr>
+</table>
+
+*Secure authentication with email OTP verification and password reset*
+
+---
+
+### 📊 Dashboard & Analytics
+
+<table>
+  <tr>
+    <td><img src="./ss/Screenshot 2025-12-12 at 18.29.15.png" alt="Dashboard" width="400"/></td>
+    <td><img src="./ss/Screenshot 2025-12-12 at 18.29.53.png" alt="Analytics" width="400"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Main Dashboard</b></td>
+    <td align="center"><b>Reports & Analytics</b></td>
+  </tr>
+</table>
+
+*Real-time expense tracking with interactive charts and visual insights*
+
+---
+
+### 💰 Expense Management
+<img src="./ss/Screenshot 2025-12-12 at 18.30.37.png" alt="Expense Management" width="800"/>
+
+*Easy-to-use interface for adding, editing, and managing expenses*
+
+</div>
+
+> **✨ Features Showcase:** All screenshots display the AI-designed UI with glassmorphism effects, gradient themes (cyan/violet/fuchsia), and smooth animations.
+
+---
 
 ## 📁 Project Structure
 
 ```
-Hisab.kitab/
+Expense-tracker-Hisab-Kitab/
 ├── backend/
 │   ├── server.js                 # Main server file
 │   ├── package.json              # Backend dependencies
@@ -221,9 +328,9 @@ MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/expense-tracker?re
 # JWT Configuration
 JWT_SECRET=your_super_secret_jwt_key_here_make_it_long_and_random_at_least_32_characters
 
-# Email Configuration (Gmail example)
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_email_app_password
+# Email Configuration - SendGrid (Recommended for Production)
+SENDGRID_API_KEY=SG.your_sendgrid_api_key_here
+EMAIL_USER=your_verified_sender@example.com
 
 # Client Configuration
 CLIENT_URL=http://localhost:5173
@@ -231,6 +338,8 @@ CLIENT_URL=http://localhost:5173
 # Environment
 NODE_ENV=development
 ```
+
+**Note:** This application uses **SendGrid API** for sending emails (OTP verification, password reset, CSV reports). SendGrid works reliably on hosting platforms like Render where SMTP ports are blocked.
 
 ### Frontend Environment Variables (.env)
 
@@ -249,17 +358,38 @@ VITE_API_URL=http://localhost:4000/api
 4. **Whitelist your IP address** (or use 0.0.0.0/0 for development)
 5. **Get your connection string** and replace the placeholder in `.env`
 
-### Email Configuration
+### Email Configuration (SendGrid)
 
-For Gmail:
-1. **Enable 2-factor authentication** on your Google account
-2. **Generate an App Password**:
-   - Go to Google Account settings
-   - Security → 2-Step Verification → App passwords
-   - Generate a password for "Mail"
-3. **Use the app password** in your `.env` file
+**Why SendGrid?** Traditional SMTP (Gmail, Outlook) doesn't work on most hosting platforms like Render because they block SMTP ports (25, 465, 587) for security. SendGrid uses HTTP API (port 443) which works everywhere.
 
-For other email providers, check their documentation for SMTP settings.
+**Setup Steps:**
+
+1. **Create a SendGrid account** at [sendgrid.com](https://sendgrid.com/) (Free tier: 100 emails/day)
+
+2. **Verify your sender email**:
+   - Go to Settings → Sender Authentication
+   - Click "Verify a Single Sender"
+   - Enter your email (e.g., your@gmail.com)
+   - Check your inbox and verify
+
+3. **Create an API Key**:
+   - Go to Settings → API Keys
+   - Click "Create API Key"
+   - Choose "Full Access" or "Restricted Access" (Mail Send)
+   - Copy the API key (starts with `SG.`)
+
+4. **Add to your `.env` file**:
+   ```env
+   SENDGRID_API_KEY=SG.your_api_key_here
+   EMAIL_USER=your_verified_sender@gmail.com
+   ```
+
+**Email Features:**
+- ✅ OTP verification emails with modern HTML templates
+- ✅ Password reset emails
+- ✅ CSV expense reports via email
+- ✅ Professional dark-themed email design
+- ✅ Works on all hosting platforms
 
 ## 🔐 Security Features
 
@@ -314,7 +444,7 @@ For other email providers, check their documentation for SMTP settings.
 
 ### Production Deployment Guide
 
-📖 **See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete step-by-step deployment instructions.**
+📖 complete step-by-step deployment instructions.**
 
 The deployment guide includes:
 - ✅ MongoDB Atlas database setup
@@ -345,15 +475,15 @@ The deployment guide includes:
 
 **Environment Variables Needed:**
 
-Backend (Render):
+**Backend (Render):**
 ```env
 NODE_ENV=production
 PORT=4000
-MONGO_URI=mongodb+srv://...
-JWT_SECRET=your_secret_key
+MONGO_URI=mongodb+srv://your_username:password@cluster.mongodb.net/expense-tracker
+JWT_SECRET=your_long_random_secret_key_minimum_32_characters
 CLIENT_URL=https://your-frontend.onrender.com
-EMAIL_USER=your@gmail.com
-EMAIL_PASS=your_app_password
+SENDGRID_API_KEY=SG.your_sendgrid_api_key
+EMAIL_USER=your_verified_sender@example.com
 ```
 
 Frontend (Render):
@@ -417,15 +547,62 @@ If you encounter any issues or have questions:
 4. **Check the console** for error messages
 5. **Create an issue** with detailed information about your problem
 
-## 🎯 Future Enhancements
+## 🎯 Roadmap & Future Enhancements
 
-- [ ] Budget tracking and alerts
-- [ ] Multi-currency support
-- [ ] Receipt image upload
-- [ ] PDF report generation
-- [ ] Dark/light mode toggle
-- [ ] Mobile app (React Native)
-- [ ] Data import/export features
-- [ ] Advanced analytics and insights
-- [ ] Team/family expense sharing
-- [ ] Integration with banking APIs
+### 🚀 Planned Features
+- [ ] **Budget Management** - Set monthly budgets and get alerts
+- [ ] **Multi-Currency Support** - Track expenses in different currencies
+- [ ] **Receipt Upload** - Attach receipt images to expenses
+- [ ] **PDF Reports** - Generate beautiful PDF reports
+- [ ] **Dark/Light Mode** - User preference theme toggle
+- [ ] **Mobile App** - React Native version for iOS/Android
+- [ ] **Data Export** - Export data in multiple formats (Excel, PDF)
+- [ ] **Advanced Analytics** - Predictive spending insights with AI
+- [ ] **Shared Expenses** - Family/team expense sharing
+- [ ] **Bank Integration** - Automatic transaction import
+- [ ] **Recurring Expenses** - Set up auto-recurring expense entries
+- [ ] **Expense Categories** - Custom user-defined categories
+- [ ] **Notifications** - Push notifications for budget alerts
+
+### 🐛 Known Issues
+- Emails may land in spam folder initially (until SendGrid domain authentication is set up)
+- Free tier Render services may experience cold starts (10-15 second delay on first request)
+
+## 📊 Project Stats
+
+- **Total Lines of Code**: ~5,000+
+- **Components**: 15+ React components
+- **API Endpoints**: 20+ RESTful endpoints
+- **Database Models**: 2 (User, Expense)
+- **Authentication Methods**: JWT + OTP
+- **Email Templates**: 3 professional HTML templates
+
+## 🙏 Acknowledgments
+
+- **UI/UX Design** - Crafted by AI for modern aesthetics
+- **Icons** - [Lucide React](https://lucide.dev/)
+- **Charts** - [Recharts](https://recharts.org/)
+- **Email Service** - [SendGrid](https://sendgrid.com/)
+- **Hosting** - [Render](https://render.com/)
+- **Database** - [MongoDB Atlas](https://www.mongodb.com/atlas)
+
+## 📞 Contact
+
+**Amrit Sapkota**
+- GitHub: [@amritsapkotadev](https://github.com/amritsapkotadev)
+- Email: amritsapkota.dev@gmail.com
+- Project Link: [https://github.com/amritsapkotadev/Expense-tracker-Hisab-Kitab](https://github.com/amritsapkotadev/Expense-tracker-Hisab-Kitab)
+
+## ⭐ Show Your Support
+
+If you found this project helpful, please consider giving it a ⭐ on GitHub!
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [Amrit Sapkota](https://github.com/amritsapkotadev)**
+
+*Hisab Kitab - Take Control of Your Finances Today!*
+
+</div>
