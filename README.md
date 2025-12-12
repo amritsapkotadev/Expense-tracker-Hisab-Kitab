@@ -33,6 +33,12 @@
 
 🌐 **Live Application**: [https://expense-tracker-hisab-kitab-2.onrender.com](https://expense-tracker-hisab-kitab-2.onrender.com)
 
+## 🎥 Demo Video
+
+[![Hisab Kitab Demo](https://img.youtube.com/vi/fFCOiw6GnEg/maxresdefault.jpg)](https://youtu.be/fFCOiw6GnEg)
+
+**Watch the full demo**: [https://youtu.be/fFCOiw6GnEg](https://youtu.be/fFCOiw6GnEg)
+
 ## ✨ Features
 
 ### 🔐 Authentication & Security
