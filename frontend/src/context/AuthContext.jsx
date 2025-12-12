@@ -88,28 +88,34 @@ export const AuthProvider = ({ children }) => {
   // Check for existing token on app load
   useEffect(() => {
     const checkAuth = async () => {
-      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
-      const token = localStorage.getItem('token');
-      const user = localStorage.getItem('user');
+      try {
+        dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
 
-      if (token && user) {
-        try {
-          // Verify token with backend
-          const response = await authAPI.getProfile();
-          dispatch({
-            type: AUTH_ACTIONS.LOGIN_SUCCESS,
-            payload: {
-              token,
-              user: response.data.data.user,
-            },
-          });
-        } catch (error) {
-          // Token is invalid, clear storage
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          dispatch({ type: AUTH_ACTIONS.LOGOUT });
+        if (token && user) {
+          try {
+            // Verify token with backend
+            const response = await authAPI.getProfile();
+            dispatch({
+              type: AUTH_ACTIONS.LOGIN_SUCCESS,
+              payload: {
+                token,
+                user: response.data.data.user,
+              },
+            });
+          } catch (error) {
+            // Token is invalid, clear storage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            dispatch({ type: AUTH_ACTIONS.LOGOUT });
+          }
+        } else {
+          dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
         }
-      } else {
+      } catch (error) {
+        // Ensure loading is always reset even on unexpected errors
+        console.error('Auth check error:', error);
         dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
       }
     };
