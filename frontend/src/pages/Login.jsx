@@ -167,8 +167,7 @@ const Login = () => {
                 )}
               </div>
 
-              {/* Password Field */}
-              <div>
+               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
                 <div className="relative group">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-cyan-400 transition-colors" />
@@ -245,13 +244,7 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Trust Badge */}
-          <div className="mt-6 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Shield className="w-4 h-4 text-green-400" />
-              <span className="text-sm text-gray-400">Secured with 256-bit encryption</span>
-            </div>
-          </div>
+         
         </div>
 
       </div>

@@ -69,9 +69,8 @@ export default function Welcome() {
               to="/signup"
               className="group relative px-6 py-2.5 rounded-xl font-semibold text-white overflow-hidden
               bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500
-              hover:shadow-2xl hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300"
+              hover:shadow-xl hover:brightness-110 transition-all duration-300"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <span className="relative flex items-center gap-2">
                 Get Started
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -135,7 +134,7 @@ export default function Welcome() {
             to="/signup"
             className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-xl text-white
             bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500
-            hover:shadow-2xl hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300"
+            hover:shadow-2xl hover:brightness-110 transition-all duration-300"
           >
             Start Your Journey
             <ArrowRight className="w-6 h-6" />

@@ -88,7 +88,6 @@ const Signup = () => {
     }
   };
 
-  // Password requirements
   const requirements = [
     { label: 'At least 8 characters', ok: password.length >= 8 },
     { label: 'One uppercase letter', ok: /[A-Z]/.test(password) },
@@ -100,8 +99,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-6 relative overflow-hidden bg-gradient-to-br from-[#0A0E27] via-[#1A1F3A] to-[#0A0E27]">
 
-      {/* Animated Background Mesh */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
+       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div className="absolute top-20 left-10 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[130px] animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-[600px] h-[600px] bg-violet-500/15 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-fuchsia-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
@@ -194,12 +192,12 @@ const Signup = () => {
                 JS
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Jamie Smith</p>
-                <p className="text-cyan-400 text-xs">Premium User</p>
+                <p className="text-white font-semibold text-sm">Ram tiwari</p>
+                <p className="text-cyan-400 text-xs"> User</p>
               </div>
             </div>
             <p className="text-gray-300 italic">
-              "Hisab Kitab helped me save ₹40,000 in just 3 months. Absolutely life-changing!"
+              "Hisab Kitab helped me save rs 40,000 in just 3 months. Absolutely life-changing! Bhanna tah j bhane pani bhyayo hai !!!"
             </p>
           </div>
         </div>
@@ -428,13 +426,7 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* Security Badge */}
-          <div className="mt-6 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Shield className="w-4 h-4 text-green-400" />
-              <span className="text-sm text-gray-400">Your data is encrypted & never shared</span>
-            </div>
-          </div>
+          
         </div>
 
       </div>
